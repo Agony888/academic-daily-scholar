@@ -1,0 +1,487 @@
+2026-06-29 16:54:45 | INFO | academic_daily_scholar | 配置检查通过 openai_base_url=http://152.53.240.99:8080 model=gpt-5.5 mail_to=agony2023@qq.com
+2026-06-29 16:55:03 | INFO | academic_daily_scholar | Academic Daily Scholar started window_start=2026-06-28 16:55:03.518682+08:00 window_end=2026-06-29 16:55:03.518682+08:00
+2026-06-29 16:55:03 | WARNING | academic_daily_scholar | SSCI whitelist not found: D:\SSCI鏈熷垔鐧藉悕鍗昣2026-06.xlsx
+2026-06-29 16:55:04 | INFO | academic_daily_scholar | OpenAlex query='primary mathematics education' count=1
+2026-06-29 16:55:11 | INFO | academic_daily_scholar | Crossref query='primary mathematics education' count=9
+2026-06-29 16:55:12 | INFO | academic_daily_scholar | OpenAlex query='elementary mathematics education' count=0
+2026-06-29 16:55:19 | INFO | academic_daily_scholar | Crossref query='elementary mathematics education' count=10
+2026-06-29 16:55:20 | INFO | academic_daily_scholar | OpenAlex query='mathematics teacher professional development' count=0
+2026-06-29 16:55:27 | INFO | academic_daily_scholar | Crossref query='mathematics teacher professional development' count=10
+2026-06-29 16:55:28 | INFO | academic_daily_scholar | OpenAlex query='teacher reflection digital competence education' count=0
+2026-06-29 16:55:37 | INFO | academic_daily_scholar | Crossref query='teacher reflection digital competence education' count=10
+2026-06-29 16:55:38 | INFO | academic_daily_scholar | OpenAlex query='artificial intelligence in education teacher' count=0
+2026-06-29 16:55:41 | INFO | academic_daily_scholar | Crossref query='artificial intelligence in education teacher' count=10
+2026-06-29 16:55:41 | INFO | academic_daily_scholar | OpenAlex query='generative AI education teacher' count=0
+2026-06-29 16:55:46 | INFO | academic_daily_scholar | Crossref query='generative AI education teacher' count=10
+2026-06-29 16:55:47 | INFO | academic_daily_scholar | OpenAlex query='large language model education teacher' count=0
+2026-06-29 16:55:49 | INFO | academic_daily_scholar | Crossref query='large language model education teacher' count=10
+2026-06-29 16:55:51 | INFO | academic_daily_scholar | OpenAlex query='ChatGPT education teacher' count=0
+2026-06-29 16:55:54 | INFO | academic_daily_scholar | Crossref query='ChatGPT education teacher' count=10
+2026-06-29 16:55:54 | INFO | academic_daily_scholar | OpenAlex query='rural teacher primary education' count=0
+2026-06-29 16:56:01 | INFO | academic_daily_scholar | Crossref query='rural teacher primary education' count=9
+2026-06-29 16:56:01 | INFO | academic_daily_scholar | 检索数量 total=89 unique=37
+2026-06-29 16:56:01 | INFO | academic_daily_scholar | 筛选完成 input=9 kept=7 selected=3 whitelist_available=False mode=strict
+2026-06-29 16:56:01 | INFO | academic_daily_scholar | AI总结开始 1/3 title=Practical teaching competence and lifelong learning attributes of pre-service teachers in local normal universities in C
+2026-06-29 16:56:13 | ERROR | academic_daily_scholar | AI总结失败 title=Practical teaching competence and lifelong learning attributes of pre-service teachers in local normal universities in China error='str' object has no attribute 'choices'
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\summarizer.py", line 52, in summarize_papers
+    summary = retry_call(
+              ^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 238, in retry_call
+    raise last_error
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in retry_call
+    return func()
+           ^^^^^^
+  File "C:\Users\agony\Documents\Academic research\summarizer.py", line 53, in <lambda>
+    lambda p=paper: summarize_one_paper(client, config, p),
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\summarizer.py", line 115, in summarize_one_paper
+    content = response.choices[0].message.content or ""
+              ^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'choices'
+2026-06-29 16:56:13 | INFO | academic_daily_scholar | AI总结开始 2/3 title=Application of P5BL Model Integrated with Education for Sustainable Development to Develop Motivation and Conceptual Und
+2026-06-29 16:56:23 | ERROR | academic_daily_scholar | AI总结失败 title=Application of P5BL Model Integrated with Education for Sustainable Development to Develop Motivation and Conceptual Understanding in Science error='str' object has no attribute 'choices'
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\summarizer.py", line 52, in summarize_papers
+    summary = retry_call(
+              ^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 238, in retry_call
+    raise last_error
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in retry_call
+    return func()
+           ^^^^^^
+  File "C:\Users\agony\Documents\Academic research\summarizer.py", line 53, in <lambda>
+    lambda p=paper: summarize_one_paper(client, config, p),
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\summarizer.py", line 115, in summarize_one_paper
+    content = response.choices[0].message.content or ""
+              ^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'choices'
+2026-06-29 16:56:23 | INFO | academic_daily_scholar | AI总结开始 3/3 title=Lived experiences of science education: a preliminary exploration of students' experiences in virtual and traditional sc
+2026-06-29 16:56:34 | ERROR | academic_daily_scholar | AI总结失败 title=Lived experiences of science education: a preliminary exploration of students' experiences in virtual and traditional science laboratories in further education error='str' object has no attribute 'choices'
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\summarizer.py", line 52, in summarize_papers
+    summary = retry_call(
+              ^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 238, in retry_call
+    raise last_error
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in retry_call
+    return func()
+           ^^^^^^
+  File "C:\Users\agony\Documents\Academic research\summarizer.py", line 53, in <lambda>
+    lambda p=paper: summarize_one_paper(client, config, p),
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\summarizer.py", line 115, in summarize_one_paper
+    content = response.choices[0].message.content or ""
+              ^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'choices'
+2026-06-29 16:56:44 | ERROR | academic_daily_scholar | 今日研究热点总结失败: 'str' object has no attribute 'choices'
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\summarizer.py", line 67, in summarize_papers
+    hotspot = retry_call(
+              ^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 238, in retry_call
+    raise last_error
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in retry_call
+    return func()
+           ^^^^^^
+  File "C:\Users\agony\Documents\Academic research\summarizer.py", line 68, in <lambda>
+    lambda: summarize_hotspots(client, config, items),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\summarizer.py", line 161, in summarize_hotspots
+    return (response.choices[0].message.content or "").strip()
+            ^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'choices'
+2026-06-29 16:56:44 | INFO | academic_daily_scholar | API耗时 seconds=42.70 failures=4
+2026-06-29 16:56:44 | INFO | academic_daily_scholar | 命令行参数要求跳过邮件发送
+2026-06-29 16:56:44 | INFO | academic_daily_scholar | 任务完成 md=C:\Users\agony\Documents\Academic research\daily\2026-06-29.md word=C:\Users\agony\Documents\Academic research\daily\2026-06-29.word 检索数量=9 成功数量=0 失败数量=4 API耗时=42.70
+2026-06-29 16:59:52 | INFO | academic_daily_scholar | 配置检查通过 openai_base_url=http://152.53.240.99:8080/v1 model=gpt-5.5 mail_to=agony2023@qq.com
+2026-06-29 16:59:53 | INFO | academic_daily_scholar | Academic Daily Scholar started window_start=2026-06-28 16:59:53.827676+08:00 window_end=2026-06-29 16:59:53.827676+08:00
+2026-06-29 16:59:53 | WARNING | academic_daily_scholar | SSCI whitelist not found: D:\SSCI鏈熷垔鐧藉悕鍗昣2026-06.xlsx
+2026-06-29 16:59:55 | INFO | academic_daily_scholar | OpenAlex query='primary mathematics education' count=1
+2026-06-29 17:00:04 | INFO | academic_daily_scholar | Crossref query='primary mathematics education' count=9
+2026-06-29 17:00:06 | INFO | academic_daily_scholar | OpenAlex query='elementary mathematics education' count=0
+2026-06-29 17:00:10 | INFO | academic_daily_scholar | Crossref query='elementary mathematics education' count=10
+2026-06-29 17:00:13 | INFO | academic_daily_scholar | OpenAlex query='mathematics teacher professional development' count=0
+2026-06-29 17:00:20 | INFO | academic_daily_scholar | Crossref query='mathematics teacher professional development' count=10
+2026-06-29 17:00:21 | INFO | academic_daily_scholar | OpenAlex query='teacher reflection digital competence education' count=0
+2026-06-29 17:00:25 | INFO | academic_daily_scholar | Crossref query='teacher reflection digital competence education' count=10
+2026-06-29 17:00:25 | INFO | academic_daily_scholar | OpenAlex query='artificial intelligence in education teacher' count=0
+2026-06-29 17:00:32 | INFO | academic_daily_scholar | Crossref query='artificial intelligence in education teacher' count=10
+2026-06-29 17:00:34 | INFO | academic_daily_scholar | OpenAlex query='generative AI education teacher' count=0
+2026-06-29 17:00:40 | INFO | academic_daily_scholar | Crossref query='generative AI education teacher' count=10
+2026-06-29 17:00:40 | INFO | academic_daily_scholar | OpenAlex query='large language model education teacher' count=0
+2026-06-29 17:00:46 | INFO | academic_daily_scholar | Crossref query='large language model education teacher' count=10
+2026-06-29 17:00:47 | INFO | academic_daily_scholar | OpenAlex query='ChatGPT education teacher' count=0
+2026-06-29 17:00:53 | INFO | academic_daily_scholar | Crossref query='ChatGPT education teacher' count=10
+2026-06-29 17:00:55 | INFO | academic_daily_scholar | OpenAlex query='rural teacher primary education' count=0
+2026-06-29 17:01:00 | INFO | academic_daily_scholar | Crossref query='rural teacher primary education' count=9
+2026-06-29 17:01:00 | INFO | academic_daily_scholar | 检索数量 total=89 unique=39
+2026-06-29 17:01:00 | INFO | academic_daily_scholar | 筛选完成 input=6 kept=4 selected=2 whitelist_available=False mode=strict
+2026-06-29 17:01:00 | INFO | academic_daily_scholar | AI总结开始 1/2 title=Practical teaching competence and lifelong learning attributes of pre-service teachers in local normal universities in C
+2026-06-29 17:02:19 | INFO | academic_daily_scholar | AI总结成功 1/2 title=Practical teaching competence and lifelong learning attributes of pre-service teachers in local normal universities in C
+2026-06-29 17:02:19 | INFO | academic_daily_scholar | AI总结开始 2/2 title=Readiness for blockchain technology adoption in higher education institutions: evidence from an integrated model
+2026-06-29 17:02:37 | INFO | academic_daily_scholar | AI总结成功 2/2 title=Readiness for blockchain technology adoption in higher education institutions: evidence from an integrated model
+2026-06-29 17:02:51 | INFO | academic_daily_scholar | API耗时 seconds=110.87 failures=0
+2026-06-29 17:02:51 | INFO | academic_daily_scholar | 命令行参数要求跳过邮件发送
+2026-06-29 17:02:51 | INFO | academic_daily_scholar | 任务完成 md=C:\Users\agony\Documents\Academic research\daily\2026-06-29.md word=C:\Users\agony\Documents\Academic research\daily\2026-06-29.word 检索数量=6 成功数量=2 失败数量=0 API耗时=110.87
+2026-06-29 17:08:09 | INFO | academic_daily_scholar | SSCI白名单加载成功 path=data\SSCI期刊白名单_2026-06.xlsx journals=0 issns=0
+2026-06-29 17:10:10 | INFO | academic_daily_scholar | SSCI白名单加载成功 path=C:\Users\agony\Documents\Academic research\data\SSCI期刊白名单_2026-06.xlsx journals=3539 issns=6735
+2026-06-29 17:10:31 | INFO | academic_daily_scholar | Academic Daily Scholar started window_start=2026-06-28 17:10:31.499648+08:00 window_end=2026-06-29 17:10:31.499648+08:00
+2026-06-29 17:10:31 | INFO | academic_daily_scholar | SSCI白名单加载成功 path=C:\Users\agony\Documents\Academic research\data\SSCI期刊白名单_2026-06.xlsx journals=3539 issns=6735
+2026-06-29 17:10:32 | INFO | academic_daily_scholar | OpenAlex query='primary mathematics education' count=1
+2026-06-29 17:10:36 | INFO | academic_daily_scholar | Crossref query='primary mathematics education' count=9
+2026-06-29 17:10:36 | INFO | academic_daily_scholar | OpenAlex query='elementary mathematics education' count=0
+2026-06-29 17:10:40 | INFO | academic_daily_scholar | Crossref query='elementary mathematics education' count=10
+2026-06-29 17:10:41 | INFO | academic_daily_scholar | OpenAlex query='mathematics teacher professional development' count=0
+2026-06-29 17:10:44 | INFO | academic_daily_scholar | Crossref query='mathematics teacher professional development' count=10
+2026-06-29 17:10:45 | INFO | academic_daily_scholar | OpenAlex query='teacher reflection digital competence education' count=0
+2026-06-29 17:10:49 | INFO | academic_daily_scholar | Crossref query='teacher reflection digital competence education' count=10
+2026-06-29 17:10:51 | INFO | academic_daily_scholar | OpenAlex query='artificial intelligence in education teacher' count=0
+2026-06-29 17:10:55 | INFO | academic_daily_scholar | Crossref query='artificial intelligence in education teacher' count=10
+2026-06-29 17:10:55 | INFO | academic_daily_scholar | OpenAlex query='generative AI education teacher' count=0
+2026-06-29 17:11:01 | INFO | academic_daily_scholar | Crossref query='generative AI education teacher' count=10
+2026-06-29 17:11:02 | INFO | academic_daily_scholar | OpenAlex query='large language model education teacher' count=0
+2026-06-29 17:11:08 | INFO | academic_daily_scholar | Crossref query='large language model education teacher' count=10
+2026-06-29 17:11:09 | INFO | academic_daily_scholar | OpenAlex query='ChatGPT education teacher' count=0
+2026-06-29 17:11:12 | INFO | academic_daily_scholar | Crossref query='ChatGPT education teacher' count=10
+2026-06-29 17:11:13 | INFO | academic_daily_scholar | OpenAlex query='rural teacher primary education' count=0
+2026-06-29 17:11:21 | INFO | academic_daily_scholar | Crossref query='rural teacher primary education' count=9
+2026-06-29 17:11:21 | INFO | academic_daily_scholar | 检索数量 total=89 unique=38
+2026-06-29 17:11:21 | INFO | academic_daily_scholar | 筛选完成 input=3 kept=2 selected=1 whitelist_available=True mode=strict
+2026-06-29 17:11:21 | INFO | academic_daily_scholar | AI总结开始 1/1 title=Readiness for blockchain technology adoption in higher education institutions: evidence from an integrated model
+2026-06-29 17:11:38 | INFO | academic_daily_scholar | AI总结成功 1/1 title=Readiness for blockchain technology adoption in higher education institutions: evidence from an integrated model
+2026-06-29 17:11:56 | INFO | academic_daily_scholar | API耗时 seconds=35.71 failures=0
+2026-06-29 17:11:56 | INFO | academic_daily_scholar | 命令行参数要求跳过邮件发送
+2026-06-29 17:11:56 | INFO | academic_daily_scholar | 任务完成 md=C:\Users\agony\Documents\Academic research\daily\2026-06-29.md word=C:\Users\agony\Documents\Academic research\daily\2026-06-29.word 检索数量=3 成功数量=1 失败数量=0 API耗时=35.71
+2026-06-29 17:13:09 | INFO | academic_daily_scholar | 配置检查通过 openai_base_url=http://152.53.240.99:8080/v1 model=gpt-5.5 mail_to=agony2023@qq.com
+2026-06-29 17:38:34 | INFO | academic_daily_scholar | 配置检查通过 openai_base_url=http://152.53.240.99:8080/v1 model=gpt-5.5 mail_to=agony2023@qq.com
+2026-06-29 17:39:59 | INFO | academic_daily_scholar | 配置检查通过 openai_base_url=http://152.53.240.99:8080/v1 model=gpt-5.5 mail_to=agony2023@qq.com
+2026-06-29 17:53:58 | ERROR | dry_run_filter | OpenAlex search failed for query=artificial intelligence teaching preschool education empirical: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=artificial+intelligence+teaching+preschool+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 224, in request_json
+    response.raise_for_status()
+  File "C:\Users\agony\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\requests\models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=artificial+intelligence+teaching+preschool+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\search.py", line 61, in search_recent_papers
+    papers.extend(_search_openalex(config, session, headers, query, window_start, window_end, logger))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\search.py", line 100, in _search_openalex
+    data = request_json(
+           ^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in request_json
+    raise RuntimeError(f"Failed to fetch JSON from {url}: {last_error}") from last_error
+RuntimeError: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=artificial+intelligence+teaching+preschool+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+2026-06-29 17:54:02 | INFO | dry_run_filter | Crossref query='artificial intelligence teaching preschool education empirical' count=10
+2026-06-29 17:54:08 | ERROR | dry_run_filter | OpenAlex search failed for query=artificial intelligence teaching primary education empirical: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=artificial+intelligence+teaching+primary+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 224, in request_json
+    response.raise_for_status()
+  File "C:\Users\agony\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\requests\models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=artificial+intelligence+teaching+primary+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\search.py", line 61, in search_recent_papers
+    papers.extend(_search_openalex(config, session, headers, query, window_start, window_end, logger))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\search.py", line 100, in _search_openalex
+    data = request_json(
+           ^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in request_json
+    raise RuntimeError(f"Failed to fetch JSON from {url}: {last_error}") from last_error
+RuntimeError: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=artificial+intelligence+teaching+primary+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+2026-06-29 17:54:15 | INFO | dry_run_filter | Crossref query='artificial intelligence teaching primary education empirical' count=9
+2026-06-29 17:54:21 | ERROR | dry_run_filter | OpenAlex search failed for query=artificial intelligence teaching elementary education empirical: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=artificial+intelligence+teaching+elementary+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 224, in request_json
+    response.raise_for_status()
+  File "C:\Users\agony\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\requests\models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=artificial+intelligence+teaching+elementary+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\search.py", line 61, in search_recent_papers
+    papers.extend(_search_openalex(config, session, headers, query, window_start, window_end, logger))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\search.py", line 100, in _search_openalex
+    data = request_json(
+           ^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in request_json
+    raise RuntimeError(f"Failed to fetch JSON from {url}: {last_error}") from last_error
+RuntimeError: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=artificial+intelligence+teaching+elementary+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+2026-06-29 17:54:25 | INFO | dry_run_filter | Crossref query='artificial intelligence teaching elementary education empirical' count=10
+2026-06-29 17:54:31 | ERROR | dry_run_filter | OpenAlex search failed for query=artificial intelligence teaching secondary education empirical: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=artificial+intelligence+teaching+secondary+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 224, in request_json
+    response.raise_for_status()
+  File "C:\Users\agony\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\requests\models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=artificial+intelligence+teaching+secondary+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\search.py", line 61, in search_recent_papers
+    papers.extend(_search_openalex(config, session, headers, query, window_start, window_end, logger))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\search.py", line 100, in _search_openalex
+    data = request_json(
+           ^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in request_json
+    raise RuntimeError(f"Failed to fetch JSON from {url}: {last_error}") from last_error
+RuntimeError: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=artificial+intelligence+teaching+secondary+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+2026-06-29 17:54:34 | INFO | dry_run_filter | Crossref query='artificial intelligence teaching secondary education empirical' count=10
+2026-06-29 17:54:40 | ERROR | dry_run_filter | OpenAlex search failed for query=generative AI classroom teaching school teachers empirical: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=generative+AI+classroom+teaching+school+teachers+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 224, in request_json
+    response.raise_for_status()
+  File "C:\Users\agony\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\requests\models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=generative+AI+classroom+teaching+school+teachers+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\search.py", line 61, in search_recent_papers
+    papers.extend(_search_openalex(config, session, headers, query, window_start, window_end, logger))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\search.py", line 100, in _search_openalex
+    data = request_json(
+           ^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in request_json
+    raise RuntimeError(f"Failed to fetch JSON from {url}: {last_error}") from last_error
+RuntimeError: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=generative+AI+classroom+teaching+school+teachers+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+2026-06-29 17:54:46 | INFO | dry_run_filter | Crossref query='generative AI classroom teaching school teachers empirical' count=10
+2026-06-29 17:54:52 | ERROR | dry_run_filter | OpenAlex search failed for query=ChatGPT school education teacher empirical study: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=ChatGPT+school+education+teacher+empirical+study&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 224, in request_json
+    response.raise_for_status()
+  File "C:\Users\agony\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\requests\models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=ChatGPT+school+education+teacher+empirical+study&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\search.py", line 61, in search_recent_papers
+    papers.extend(_search_openalex(config, session, headers, query, window_start, window_end, logger))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\search.py", line 100, in _search_openalex
+    data = request_json(
+           ^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in request_json
+    raise RuntimeError(f"Failed to fetch JSON from {url}: {last_error}") from last_error
+RuntimeError: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=ChatGPT+school+education+teacher+empirical+study&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+2026-06-29 17:54:55 | INFO | dry_run_filter | Crossref query='ChatGPT school education teacher empirical study' count=10
+2026-06-29 17:55:01 | ERROR | dry_run_filter | OpenAlex search failed for query=teacher digital literacy artificial intelligence school education: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=teacher+digital+literacy+artificial+intelligence+school+education&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 224, in request_json
+    response.raise_for_status()
+  File "C:\Users\agony\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\requests\models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=teacher+digital+literacy+artificial+intelligence+school+education&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\search.py", line 61, in search_recent_papers
+    papers.extend(_search_openalex(config, session, headers, query, window_start, window_end, logger))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\search.py", line 100, in _search_openalex
+    data = request_json(
+           ^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in request_json
+    raise RuntimeError(f"Failed to fetch JSON from {url}: {last_error}") from last_error
+RuntimeError: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=teacher+digital+literacy+artificial+intelligence+school+education&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+2026-06-29 17:55:04 | INFO | dry_run_filter | Crossref query='teacher digital literacy artificial intelligence school education' count=10
+2026-06-29 17:55:10 | ERROR | dry_run_filter | OpenAlex search failed for query=teacher AI literacy K-12 education empirical: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=teacher+AI+literacy+K-12+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 224, in request_json
+    response.raise_for_status()
+  File "C:\Users\agony\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\requests\models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=teacher+AI+literacy+K-12+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\search.py", line 61, in search_recent_papers
+    papers.extend(_search_openalex(config, session, headers, query, window_start, window_end, logger))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\search.py", line 100, in _search_openalex
+    data = request_json(
+           ^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in request_json
+    raise RuntimeError(f"Failed to fetch JSON from {url}: {last_error}") from last_error
+RuntimeError: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=teacher+AI+literacy+K-12+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+2026-06-29 17:55:16 | INFO | dry_run_filter | Crossref query='teacher AI literacy K-12 education empirical' count=10
+2026-06-29 17:55:23 | ERROR | dry_run_filter | OpenAlex search failed for query=teacher data literacy digital education empirical: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=teacher+data+literacy+digital+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 224, in request_json
+    response.raise_for_status()
+  File "C:\Users\agony\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\requests\models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=teacher+data+literacy+digital+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\search.py", line 61, in search_recent_papers
+    papers.extend(_search_openalex(config, session, headers, query, window_start, window_end, logger))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\search.py", line 100, in _search_openalex
+    data = request_json(
+           ^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in request_json
+    raise RuntimeError(f"Failed to fetch JSON from {url}: {last_error}") from last_error
+RuntimeError: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=teacher+data+literacy+digital+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+2026-06-29 17:55:28 | INFO | dry_run_filter | Crossref query='teacher data literacy digital education empirical' count=10
+2026-06-29 17:55:34 | ERROR | dry_run_filter | OpenAlex search failed for query=teacher education artificial intelligence integration preservice teachers: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=teacher+education+artificial+intelligence+integration+preservice+teachers&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 224, in request_json
+    response.raise_for_status()
+  File "C:\Users\agony\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\requests\models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=teacher+education+artificial+intelligence+integration+preservice+teachers&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\search.py", line 61, in search_recent_papers
+    papers.extend(_search_openalex(config, session, headers, query, window_start, window_end, logger))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\search.py", line 100, in _search_openalex
+    data = request_json(
+           ^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in request_json
+    raise RuntimeError(f"Failed to fetch JSON from {url}: {last_error}") from last_error
+RuntimeError: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=teacher+education+artificial+intelligence+integration+preservice+teachers&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+2026-06-29 17:55:39 | INFO | dry_run_filter | Crossref query='teacher education artificial intelligence integration preservice teachers' count=10
+2026-06-29 17:55:45 | ERROR | dry_run_filter | OpenAlex search failed for query=pre-service teacher training artificial intelligence education: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=pre-service+teacher+training+artificial+intelligence+education&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 224, in request_json
+    response.raise_for_status()
+  File "C:\Users\agony\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\requests\models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=pre-service+teacher+training+artificial+intelligence+education&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\search.py", line 61, in search_recent_papers
+    papers.extend(_search_openalex(config, session, headers, query, window_start, window_end, logger))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\search.py", line 100, in _search_openalex
+    data = request_json(
+           ^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in request_json
+    raise RuntimeError(f"Failed to fetch JSON from {url}: {last_error}") from last_error
+RuntimeError: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=pre-service+teacher+training+artificial+intelligence+education&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+2026-06-29 17:55:48 | INFO | dry_run_filter | Crossref query='pre-service teacher training artificial intelligence education' count=10
+2026-06-29 17:55:54 | ERROR | dry_run_filter | OpenAlex search failed for query=in-service teacher professional development AI digital transformation: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=in-service+teacher+professional+development+AI+digital+transformation&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 224, in request_json
+    response.raise_for_status()
+  File "C:\Users\agony\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\requests\models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=in-service+teacher+professional+development+AI+digital+transformation&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\search.py", line 61, in search_recent_papers
+    papers.extend(_search_openalex(config, session, headers, query, window_start, window_end, logger))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\search.py", line 100, in _search_openalex
+    data = request_json(
+           ^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in request_json
+    raise RuntimeError(f"Failed to fetch JSON from {url}: {last_error}") from last_error
+RuntimeError: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=in-service+teacher+professional+development+AI+digital+transformation&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+2026-06-29 17:56:01 | INFO | dry_run_filter | Crossref query='in-service teacher professional development AI digital transformation' count=10
+2026-06-29 17:56:08 | ERROR | dry_run_filter | OpenAlex search failed for query=educational digital transformation teacher role school education: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=educational+digital+transformation+teacher+role+school+education&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 224, in request_json
+    response.raise_for_status()
+  File "C:\Users\agony\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\requests\models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=educational+digital+transformation+teacher+role+school+education&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\search.py", line 61, in search_recent_papers
+    papers.extend(_search_openalex(config, session, headers, query, window_start, window_end, logger))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\search.py", line 100, in _search_openalex
+    data = request_json(
+           ^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in request_json
+    raise RuntimeError(f"Failed to fetch JSON from {url}: {last_error}") from last_error
+RuntimeError: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=educational+digital+transformation+teacher+role+school+education&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+2026-06-29 17:56:11 | INFO | dry_run_filter | Crossref query='educational digital transformation teacher role school education' count=10
+2026-06-29 17:56:17 | ERROR | dry_run_filter | OpenAlex search failed for query=AI lesson planning classroom assessment teacher education empirical: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=AI+lesson+planning+classroom+assessment+teacher+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 224, in request_json
+    response.raise_for_status()
+  File "C:\Users\agony\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\requests\models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=AI+lesson+planning+classroom+assessment+teacher+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\agony\Documents\Academic research\search.py", line 61, in search_recent_papers
+    papers.extend(_search_openalex(config, session, headers, query, window_start, window_end, logger))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\search.py", line 100, in _search_openalex
+    data = request_json(
+           ^^^^^^^^^^^^^
+  File "C:\Users\agony\Documents\Academic research\utils.py", line 231, in request_json
+    raise RuntimeError(f"Failed to fetch JSON from {url}: {last_error}") from last_error
+RuntimeError: Failed to fetch JSON from https://api.openalex.org/works: 429 Client Error: Too Many Requests for url: https://api.openalex.org/works?search=AI+lesson+planning+classroom+assessment+teacher+education+empirical&filter=type%3Aarticle%2Clanguage%3Aen%2Cfrom_publication_date%3A2025-06-29%2Cto_publication_date%3A2026-06-29&sort=publication_date%3Adesc&per-page=10&mailto=agony2023%40qq.com
+2026-06-29 17:56:19 | INFO | dry_run_filter | Crossref query='AI lesson planning classroom assessment teacher education empirical' count=10
+2026-06-29 17:56:19 | INFO | dry_run_filter | 检索数量 total=139 unique=46
+2026-06-29 17:56:20 | INFO | dry_run_filter | SSCI白名单加载成功 path=C:\Users\agony\Documents\Academic research\data\SSCI期刊白名单_2026-06.xlsx journals=3539 issns=6735
+2026-06-29 17:56:20 | INFO | dry_run_filter | 筛选完成 input=15 kept=0 selected=0 whitelist_available=True mode=strict
+2026-06-29 17:58:49 | INFO | dry_run_filter2 | OpenAlex query='artificial intelligence teaching preschool education empirical' count=50
+2026-06-29 17:58:55 | INFO | dry_run_filter2 | Crossref query='artificial intelligence teaching preschool education empirical' count=49
+2026-06-29 17:58:57 | INFO | dry_run_filter2 | OpenAlex query='artificial intelligence teaching primary education empirical' count=50
+2026-06-29 17:59:04 | INFO | dry_run_filter2 | Crossref query='artificial intelligence teaching primary education empirical' count=46
+2026-06-29 17:59:06 | INFO | dry_run_filter2 | OpenAlex query='artificial intelligence teaching elementary education empirical' count=50
+2026-06-29 17:59:12 | INFO | dry_run_filter2 | Crossref query='artificial intelligence teaching elementary education empirical' count=49
+2026-06-29 17:59:14 | INFO | dry_run_filter2 | OpenAlex query='artificial intelligence teaching secondary education empirical' count=50
+2026-06-29 17:59:20 | INFO | dry_run_filter2 | Crossref query='artificial intelligence teaching secondary education empirical' count=49
+2026-06-29 17:59:22 | INFO | dry_run_filter2 | OpenAlex query='generative AI classroom teaching school teachers empirical' count=50
+2026-06-29 17:59:29 | INFO | dry_run_filter2 | Crossref query='generative AI classroom teaching school teachers empirical' count=49
+2026-06-29 17:59:31 | INFO | dry_run_filter2 | OpenAlex query='ChatGPT school education teacher empirical study' count=50
+2026-06-29 17:59:36 | INFO | dry_run_filter2 | Crossref query='ChatGPT school education teacher empirical study' count=48
+2026-06-29 17:59:39 | INFO | dry_run_filter2 | OpenAlex query='teacher digital literacy artificial intelligence school education' count=50
+2026-06-29 17:59:43 | INFO | dry_run_filter2 | Crossref query='teacher digital literacy artificial intelligence school education' count=49
+2026-06-29 17:59:45 | INFO | dry_run_filter2 | OpenAlex query='teacher AI literacy K-12 education empirical' count=50
+2026-06-29 17:59:47 | INFO | dry_run_filter2 | Crossref query='teacher AI literacy K-12 education empirical' count=46
+2026-06-29 17:59:49 | INFO | dry_run_filter2 | OpenAlex query='teacher data literacy digital education empirical' count=50
+2026-06-29 17:59:57 | INFO | dry_run_filter2 | Crossref query='teacher data literacy digital education empirical' count=49
+2026-06-29 17:59:59 | INFO | dry_run_filter2 | OpenAlex query='teacher education artificial intelligence integration preservice teachers' count=50
+2026-06-29 18:00:05 | INFO | dry_run_filter2 | Crossref query='teacher education artificial intelligence integration preservice teachers' count=50
+2026-06-29 18:00:08 | INFO | dry_run_filter2 | OpenAlex query='pre-service teacher training artificial intelligence education' count=50
+2026-06-29 18:00:13 | INFO | dry_run_filter2 | Crossref query='pre-service teacher training artificial intelligence education' count=50
+2026-06-29 18:00:15 | INFO | dry_run_filter2 | OpenAlex query='in-service teacher professional development AI digital transformation' count=50
+2026-06-29 18:00:22 | INFO | dry_run_filter2 | Crossref query='in-service teacher professional development AI digital transformation' count=49
+2026-06-29 18:00:26 | INFO | dry_run_filter2 | OpenAlex query='educational digital transformation teacher role school education' count=50
+2026-06-29 18:00:32 | INFO | dry_run_filter2 | Crossref query='educational digital transformation teacher role school education' count=48
+2026-06-29 18:00:40 | INFO | dry_run_filter2 | OpenAlex query='AI lesson planning classroom assessment teacher education empirical' count=50
+2026-06-29 18:00:46 | INFO | dry_run_filter2 | Crossref query='AI lesson planning classroom assessment teacher education empirical' count=48
+2026-06-29 18:00:46 | INFO | dry_run_filter2 | 检索数量 total=1379 unique=499
+2026-06-29 18:00:46 | INFO | dry_run_filter2 | SSCI白名单加载成功 path=C:\Users\agony\Documents\Academic research\data\SSCI期刊白名单_2026-06.xlsx journals=3539 issns=6735
+2026-06-29 18:00:47 | INFO | dry_run_filter2 | 筛选完成 input=400 kept=7 selected=5 whitelist_available=True mode=strict

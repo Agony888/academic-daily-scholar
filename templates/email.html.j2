@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ subject }}</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #eef3fb;
+      color: #182235;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      line-height: 1.72;
+    }
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px 14px 40px;
+    }
+    .hero {
+      background: linear-gradient(135deg, #2454d6, #37b4c8);
+      color: #fff;
+      border-radius: 22px;
+      padding: 30px 34px;
+      box-shadow: 0 16px 42px rgba(35, 75, 150, .22);
+    }
+    .hero h1 { margin: 0 0 10px; font-size: 28px; }
+    .hero p { margin: 4px 0; opacity: .95; }
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      margin: 18px 0;
+      padding: 24px 28px;
+      box-shadow: 0 8px 26px rgba(41, 60, 104, .10);
+      border: 1px solid #dce6f5;
+    }
+    h2 {
+      color: #174cba;
+      margin: 0 0 16px;
+      font-size: 22px;
+    }
+    h3 {
+      color: #173b77;
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+    .toc a {
+      color: #1657bd;
+      text-decoration: none;
+    }
+    .toc li { margin-bottom: 8px; }
+    .quote {
+      border-left: 5px solid #4c8df6;
+      background: #f3f7ff;
+      padding: 14px 18px;
+      border-radius: 12px;
+      color: #293a5d;
+      margin: 14px 0;
+    }
+    .meta {
+      background: #f8fbff;
+      border: 1px solid #e2eaf7;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin: 14px 0;
+      color: #34425c;
+    }
+    .meta div { margin: 4px 0; }
+    .pill {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #eaf2ff;
+      color: #1557b0;
+      font-size: 12px;
+      margin-right: 6px;
+    }
+    .section {
+      border-top: 1px dashed #d8e3f3;
+      padding-top: 12px;
+      margin-top: 14px;
+    }
+    .section strong {
+      color: #234c91;
+    }
+    a {
+      color: #0b63ce;
+      word-break: break-word;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    .stat {
+      background: #f7faff;
+      border: 1px solid #e3ecf8;
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+    }
+    .stat b {
+      display: block;
+      color: #174cba;
+      font-size: 18px;
+    }
+    .footer {
+      text-align: center;
+      color: #68758d;
+      font-size: 13px;
+      margin-top: 18px;
+    }
+    @media (max-width: 720px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .hero, .card { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <h1>📚 每日SSCI文献简报</h1>
+      <p>⏰ 生成时间：{{ report.generated_at.strftime('%Y-%m-%d %H:%M:%S') }}（北京时间）</p>
+      <p>🔎 检索窗口：{{ report.window_start.strftime('%Y-%m-%d %H:%M') }} — {{ report.window_end.strftime('%Y-%m-%d %H:%M') }}</p>
+    </div>
+
+    <div class="card">
+      <h2>一、今日研究亮点总结</h2>
+      <div class="quote">{{ report.hotspot_summary | replace('\n', '<br>') | safe }}</div>
+    </div>
+
+    <div class="card toc">
+      <h2>🧭 目录</h2>
+      {% if report.items %}
+      <ol>
+        {% for item in report.items %}
+        <li><a href="#paper-{{ loop.index }}">{{ item.paper.title }} / {{ item.summary.chinese_title }}</a></li>
+        {% endfor %}
+      </ol>
+      {% else %}
+      <p>今日未筛选到符合条件的论文。</p>
+      {% endif %}
+    </div>
+
+    {% for item in report.items %}
+    <div class="card" id="paper-{{ loop.index }}">
+      <h2>📄 {{ loop.index }}. {{ item.paper.title }} / {{ item.summary.chinese_title }}</h2>
+      <div class="meta">
+        <div><strong>标题：</strong>{{ item.paper.title }} / {{ item.summary.chinese_title }}</div>
+        <div><strong>作者：</strong>{{ item.summary.authors_text or (item.paper.authors[:8] | join(', ') if item.paper.authors else '摘要未说明') }}</div>
+        <div><strong>期刊及影响因子：</strong>{{ item.summary.journal_impact or ((item.paper.journal or '未知期刊') ~ '；影响因子/分区：白名单未提供') }}</div>
+        <div><strong>卷期/DOI：</strong>{{ item.summary.volume_issue_doi or item.paper.doi or '摘要未说明' }}</div>
+        <div><strong>在线发表时间：</strong>{{ item.summary.online_date or (item.paper.published_date | date_cn) }}</div>
+        <div><strong>SSCI分类：</strong>{{ item.paper.ssci_categories | join('；') if item.paper.ssci_categories else 'SSCI白名单匹配；分类未提供' }}</div>
+        {% set link = item.paper.url or ('https://doi.org/' ~ item.paper.doi if item.paper.doi else '') %}
+        {% if link %}
+        <div><strong>论文链接：</strong><a href="{{ link }}">{{ link }}</a></div>
+        {% endif %}
+      </div>
+
+      <div class="section"><strong>研究摘要</strong><br>{{ item.summary.research_abstract }}</div>
+      <div class="section"><strong>研究主要内容</strong><br>{{ item.summary.main_content }}</div>
+      <div class="section"><strong>研究论点</strong><br>{{ item.summary.argument }}</div>
+      <div class="section"><strong>研究问题</strong><br>{{ item.summary.research_question }}</div>
+      <div class="section"><strong>研究方法</strong><br>{{ item.summary.methods }}</div>
+      <div class="section"><strong>主要发现</strong><br>{{ item.summary.findings }}</div>
+      <div class="section"><strong>对教师教育研究的启示</strong><br>{{ item.summary.implications_teacher_education }}</div>
+      <div class="section"><strong>APA引用格式</strong><br>{{ item.summary.apa_citation }}</div>
+    </div>
+    {% endfor %}
+
+    <div class="card">
+      <h2>📊 运行统计</h2>
+      <div class="stats">
+        <div class="stat"><b>{{ report.total_found }}</b>检索数量</div>
+        <div class="stat"><b>{{ report.total_filtered }}</b>筛选数量</div>
+        <div class="stat"><b>{{ report.total_success }}</b>成功数量</div>
+        <div class="stat"><b>{{ report.total_failed }}</b>失败数量</div>
+        <div class="stat"><b>{{ '%.1f'|format(report.api_elapsed_seconds) }}s</b>API耗时</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Generated by Academic Daily Scholar. Suitable for Obsidian, Word/WPS and email reading.
+    </div>
+  </div>
+</body>
+</html>

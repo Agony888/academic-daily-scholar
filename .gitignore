@@ -1,0 +1,12 @@
+.env
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Generated reports and logs are intentionally kept by default.
+# Uncomment the following lines if you do not want to commit daily outputs.
+# daily/*.md
+# daily/*.word
+# logs/*.log
