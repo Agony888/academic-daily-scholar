@@ -278,10 +278,11 @@ def filter_papers(
     logger: logging.Logger,
     whitelist: SsciWhitelist | None = None,
     exclude_identities: set[str] | None = None,
+    ignore_seen: bool = False,
 ) -> list[Paper]:
     whitelist = whitelist or load_ssci_whitelist(config.ssci_whitelist_path, logger)
     filtered: list[Paper] = []
-    seen = load_seen_identities(config.seen_state_path)
+    seen = set() if ignore_seen else load_seen_identities(config.seen_state_path)
     if exclude_identities:
         seen.update(exclude_identities)
 
