@@ -485,3 +485,46 @@ RuntimeError: Failed to fetch JSON from https://api.openalex.org/works: 429 Clie
 2026-06-29 18:00:46 | INFO | dry_run_filter2 | 检索数量 total=1379 unique=499
 2026-06-29 18:00:46 | INFO | dry_run_filter2 | SSCI白名单加载成功 path=C:\Users\agony\Documents\Academic research\data\SSCI期刊白名单_2026-06.xlsx journals=3539 issns=6735
 2026-06-29 18:00:47 | INFO | dry_run_filter2 | 筛选完成 input=400 kept=7 selected=5 whitelist_available=True mode=strict
+2026-06-29 10:41:34 | INFO | academic_daily_scholar | Academic Daily Scholar started window_start=2025-06-29 18:41:34.148121+08:00 window_end=2026-06-29 18:41:34.148121+08:00
+2026-06-29 10:41:34 | INFO | academic_daily_scholar | SSCI白名单加载成功 path=/home/runner/work/academic-daily-scholar/academic-daily-scholar/data/SSCI期刊白名单_2026-06.xlsx journals=3539 issns=6735
+2026-06-29 10:41:36 | INFO | academic_daily_scholar | OpenAlex query='artificial intelligence teaching preschool education empirical' count=50
+2026-06-29 10:41:43 | INFO | academic_daily_scholar | Crossref query='artificial intelligence teaching preschool education empirical' count=49
+2026-06-29 10:41:44 | INFO | academic_daily_scholar | OpenAlex query='artificial intelligence teaching primary education empirical' count=50
+2026-06-29 10:41:51 | INFO | academic_daily_scholar | Crossref query='artificial intelligence teaching primary education empirical' count=46
+2026-06-29 10:41:52 | INFO | academic_daily_scholar | OpenAlex query='artificial intelligence teaching elementary education empirical' count=50
+2026-06-29 10:41:57 | INFO | academic_daily_scholar | Crossref query='artificial intelligence teaching elementary education empirical' count=49
+2026-06-29 10:41:58 | INFO | academic_daily_scholar | OpenAlex query='artificial intelligence teaching secondary education empirical' count=50
+2026-06-29 10:42:04 | INFO | academic_daily_scholar | Crossref query='artificial intelligence teaching secondary education empirical' count=49
+2026-06-29 10:42:05 | INFO | academic_daily_scholar | OpenAlex query='generative AI classroom teaching school teachers empirical' count=50
+2026-06-29 10:42:11 | INFO | academic_daily_scholar | Crossref query='generative AI classroom teaching school teachers empirical' count=49
+2026-06-29 10:42:12 | INFO | academic_daily_scholar | OpenAlex query='ChatGPT school education teacher empirical study' count=50
+2026-06-29 10:42:18 | INFO | academic_daily_scholar | Crossref query='ChatGPT school education teacher empirical study' count=48
+2026-06-29 10:42:19 | INFO | academic_daily_scholar | OpenAlex query='teacher digital literacy artificial intelligence school education' count=50
+2026-06-29 10:42:24 | INFO | academic_daily_scholar | Crossref query='teacher digital literacy artificial intelligence school education' count=49
+2026-06-29 10:42:25 | INFO | academic_daily_scholar | OpenAlex query='teacher AI literacy K-12 education empirical' count=50
+2026-06-29 10:42:30 | INFO | academic_daily_scholar | Crossref query='teacher AI literacy K-12 education empirical' count=46
+2026-06-29 10:42:31 | INFO | academic_daily_scholar | OpenAlex query='teacher data literacy digital education empirical' count=50
+2026-06-29 10:42:36 | INFO | academic_daily_scholar | Crossref query='teacher data literacy digital education empirical' count=49
+2026-06-29 10:42:38 | INFO | academic_daily_scholar | OpenAlex query='teacher education artificial intelligence integration preservice teachers' count=50
+2026-06-29 10:42:43 | INFO | academic_daily_scholar | Crossref query='teacher education artificial intelligence integration preservice teachers' count=50
+2026-06-29 10:42:44 | INFO | academic_daily_scholar | OpenAlex query='pre-service teacher training artificial intelligence education' count=50
+2026-06-29 10:42:49 | INFO | academic_daily_scholar | Crossref query='pre-service teacher training artificial intelligence education' count=50
+2026-06-29 10:42:51 | INFO | academic_daily_scholar | OpenAlex query='in-service teacher professional development AI digital transformation' count=50
+2026-06-29 10:42:57 | INFO | academic_daily_scholar | Crossref query='in-service teacher professional development AI digital transformation' count=49
+2026-06-29 10:42:58 | INFO | academic_daily_scholar | OpenAlex query='educational digital transformation teacher role school education' count=50
+2026-06-29 10:43:04 | INFO | academic_daily_scholar | Crossref query='educational digital transformation teacher role school education' count=48
+2026-06-29 10:43:05 | INFO | academic_daily_scholar | OpenAlex query='AI lesson planning classroom assessment teacher education empirical' count=50
+2026-06-29 10:43:11 | INFO | academic_daily_scholar | Crossref query='AI lesson planning classroom assessment teacher education empirical' count=48
+2026-06-29 10:43:11 | INFO | academic_daily_scholar | 检索数量 total=1379 unique=503
+2026-06-29 10:43:11 | INFO | academic_daily_scholar | 筛选完成 input=400 kept=4 selected=4 whitelist_available=True mode=strict
+2026-06-29 10:43:11 | INFO | academic_daily_scholar | AI摘要开始 1/4 title=Classroom digital game integration practices framework: exploring science teachers’ constructivist beliefs and digital g
+2026-06-29 10:44:11 | INFO | academic_daily_scholar | AI摘要成功 1/4 title=Classroom digital game integration practices framework: exploring science teachers’ constructivist beliefs and digital g
+2026-06-29 10:44:11 | INFO | academic_daily_scholar | AI摘要开始 2/4 title=Pre-Service Mathematics Teachers’ Interaction with ChatGPT During the Design of Outdoor Mathematics Learning Activities:
+2026-06-29 10:45:05 | INFO | academic_daily_scholar | AI摘要成功 2/4 title=Pre-Service Mathematics Teachers’ Interaction with ChatGPT During the Design of Outdoor Mathematics Learning Activities:
+2026-06-29 10:45:05 | INFO | academic_daily_scholar | AI摘要开始 3/4 title=What it means to learn with GenAI: Theorising student teachers’ perspectives on learning with GenAI through Q methodolog
+2026-06-29 10:45:34 | INFO | academic_daily_scholar | AI摘要成功 3/4 title=What it means to learn with GenAI: Theorising student teachers’ perspectives on learning with GenAI through Q methodolog
+2026-06-29 10:45:34 | INFO | academic_daily_scholar | AI摘要开始 4/4 title=Volunteering motivation and sustainable development awareness as predictors of preservice teachers’ personal social resp
+2026-06-29 10:46:29 | INFO | academic_daily_scholar | AI摘要成功 4/4 title=Volunteering motivation and sustainable development awareness as predictors of preservice teachers’ personal social resp
+2026-06-29 10:46:36 | INFO | academic_daily_scholar | API耗时 seconds=204.89 failures=0
+2026-06-29 10:46:39 | INFO | academic_daily_scholar | 发送邮件状态 success to=agony2023@qq.com
+2026-06-29 10:46:39 | INFO | academic_daily_scholar | 任务完成 md=/home/runner/work/academic-daily-scholar/academic-daily-scholar/daily/2026-06-29.md word=/home/runner/work/academic-daily-scholar/academic-daily-scholar/daily/2026-06-29.docx 检索数量=400 成功数量=4 失败数量=0 API耗时=204.89
