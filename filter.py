@@ -96,6 +96,14 @@ AI_TEACHING_KEYWORDS: tuple[str, ...] = (
     "lesson planning",
     "classroom assessment",
     "teaching analytics",
+    "digital technology",
+    "educational technology",
+    "technology-enhanced",
+    "technology enhanced",
+    "digital tool",
+    "digital tools",
+    "digital teaching",
+    "digital learning",
 )
 
 TEACHER_KEYWORDS: tuple[str, ...] = (
@@ -388,14 +396,16 @@ def _score_paper(paper: Paper, whitelist: SsciWhitelist, mode: str) -> tuple[boo
     if not stage_hits and not teacher_education_exception:
         return False, score, reasons + ["no_preschool_or_basic_education_stage"]
     if not ai_hits and not teacher_hits:
-        return False, score, reasons + ["no_ai_or_teacher_literacy_theme"]
-    if not empirical_hits:
-        return False, score, reasons + ["no_empirical_data_signal"]
+        return False, score, reasons + ["no_ai_or_teacher_literacy_or_teacher_education_theme"]
 
     score += 10 + min(15, len(stage_hits) * 3)
     score += min(20, len(ai_hits) * 4)
     score += min(20, len(teacher_hits) * 4)
-    score += min(15, len(empirical_hits) * 3)
+    if empirical_hits:
+        score += min(20, len(empirical_hits) * 4)
+    else:
+        score -= 8
+        reasons.append("empirical_signal_missing_but_allowed")
 
     if ssci_match:
         score += 30
