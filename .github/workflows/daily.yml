@@ -54,21 +54,3 @@ jobs:
           SSCI_WHITELIST_PATH: data/ssci_whitelist_2026-06.xlsx
           SSCI_FILTER_MODE: strict
         run: python main.py run-once
-
-      - name: Commit generated daily reports and logs
-        if: always()
-        continue-on-error: true
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add daily logs data/seen_papers.json
-          if git diff --cached --quiet; then
-            echo "No generated files to commit."
-          else
-            git commit -m "chore: add daily academic report"
-            git pull --rebase origin main || true
-            git push || echo "Push skipped because remote changed. Reports were still generated and emailed in this run."
-          fi
-
-          exit 0

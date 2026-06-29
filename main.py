@@ -81,6 +81,13 @@ def run_daily_job(*, send_email: bool | None = None) -> DailyReport:
 
     md_path = generate_markdown(report, config)
     word_path = generate_word(report, config)
+    logger.info(
+        "日报附件生成完成 markdown=%s exists=%s word=%s exists=%s",
+        md_path,
+        md_path.exists(),
+        word_path,
+        word_path.exists(),
+    )
     html = generate_html(report, config)
 
     should_send = config.mail_enabled if send_email is None else send_email

@@ -36,7 +36,9 @@ def send_daily_email(
     alternative.attach(MIMEText(html, "html", "utf-8"))
     message.attach(alternative)
 
-    for attachment_path in _attachment_paths(report):
+    attachment_paths = _attachment_paths(report)
+    logger.info("准备发送邮件附件 count=%s files=%s", len(attachment_paths), [path.name for path in attachment_paths])
+    for attachment_path in attachment_paths:
         try:
             message.attach(_build_attachment(attachment_path))
             logger.info("邮件附件已添加 path=%s size=%s", attachment_path, attachment_path.stat().st_size)
