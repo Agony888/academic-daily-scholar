@@ -13,7 +13,15 @@ from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
 
 from config import AppConfig
-from utils import DailyReport, ReportItem, format_date_cn, write_text_file
+from utils import (
+    DailyReport,
+    ReportItem,
+    doi_url,
+    format_date_cn,
+    google_scholar_url,
+    researchgate_url,
+    write_text_file,
+)
 
 
 def generate_markdown(report: DailyReport, config: AppConfig) -> Path:
@@ -204,10 +212,10 @@ def _add_one_paper(document: Document, index: int, item: ReportItem) -> None:
     _add_table_row(table, "在线发表时间", summary.online_date or format_date_cn(paper.published_date))
     _add_table_row(table, "SSCI分类", "；".join(paper.ssci_categories) if paper.ssci_categories else "SSCI白名单匹配；分类未提供")
 
-    link = paper.url or (f"https://doi.org/{paper.doi}" if paper.doi else "")
-    if link:
+    links = _paper_links(paper)
+    for label, link in links:
         row = table.add_row()
-        row.cells[0].text = "论文链接"
+        row.cells[0].text = label
         row.cells[0].paragraphs[0].runs[0].bold = True
         _add_hyperlink(row.cells[1].paragraphs[0], link, link)
 
@@ -354,7 +362,7 @@ def build_markdown(report: DailyReport) -> str:
 def _item_markdown(index: int, item: ReportItem) -> list[str]:
     paper = item.paper
     summary = item.summary
-    doi_or_url = paper.url or (f"https://doi.org/{paper.doi}" if paper.doi else "")
+    links = _paper_links(paper)
     journal_impact = summary.journal_impact or f"{paper.journal or '未知期刊'}；影响因子/分区：白名单未提供"
     lines = [
         f"### <a id=\"paper-{index}\"></a>{index}. {paper.title} / {summary.chinese_title}",
@@ -366,8 +374,8 @@ def _item_markdown(index: int, item: ReportItem) -> list[str]:
         f"- **在线发表时间**：{summary.online_date or format_date_cn(paper.published_date)}",
         f"- **SSCI分类**：{'；'.join(paper.ssci_categories) if paper.ssci_categories else 'SSCI白名单匹配；分类未提供'}",
     ]
-    if doi_or_url:
-        lines.append(f"- **论文链接**：[{doi_or_url}]({doi_or_url})")
+    for label, link in links:
+        lines.append(f"- **{label}**：[{link}]({link})")
     lines.extend(
         [
             "",
@@ -398,3 +406,15 @@ def _item_markdown(index: int, item: ReportItem) -> list[str]:
         ]
     )
     return lines
+
+
+def _paper_links(paper) -> list[tuple[str, str]]:
+    links: list[tuple[str, str]] = []
+    doi_link = doi_url(paper.doi)
+    if doi_link:
+        links.append(("DOI链接", doi_link))
+    if paper.url and paper.url != doi_link:
+        links.append(("论文来源链接", paper.url))
+    links.append(("Google Scholar搜索", google_scholar_url(paper.title)))
+    links.append(("ResearchGate搜索", researchgate_url(paper.title)))
+    return links

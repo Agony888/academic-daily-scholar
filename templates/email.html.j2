@@ -153,10 +153,15 @@
         <div><strong>卷期/DOI：</strong>{{ item.summary.volume_issue_doi or item.paper.doi or '摘要未说明' }}</div>
         <div><strong>在线发表时间：</strong>{{ item.summary.online_date or (item.paper.published_date | date_cn) }}</div>
         <div><strong>SSCI分类：</strong>{{ item.paper.ssci_categories | join('；') if item.paper.ssci_categories else 'SSCI白名单匹配；分类未提供' }}</div>
-        {% set link = item.paper.url or ('https://doi.org/' ~ item.paper.doi if item.paper.doi else '') %}
-        {% if link %}
-        <div><strong>论文链接：</strong><a href="{{ link }}">{{ link }}</a></div>
+        {% set doi_link = doi_url(item.paper.doi) %}
+        {% if doi_link %}
+        <div><strong>DOI链接：</strong><a href="{{ doi_link }}">{{ doi_link }}</a></div>
         {% endif %}
+        {% if item.paper.url and item.paper.url != doi_link %}
+        <div><strong>论文来源链接：</strong><a href="{{ item.paper.url }}">{{ item.paper.url }}</a></div>
+        {% endif %}
+        <div><strong>Google Scholar搜索：</strong><a href="{{ google_scholar_url(item.paper.title) }}">{{ google_scholar_url(item.paper.title) }}</a></div>
+        <div><strong>ResearchGate搜索：</strong><a href="{{ researchgate_url(item.paper.title) }}">{{ researchgate_url(item.paper.title) }}</a></div>
       </div>
 
       <div class="section"><strong>研究摘要</strong><br>{{ item.summary.research_abstract }}</div>

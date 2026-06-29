@@ -11,6 +11,7 @@ from datetime import date, datetime
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping, Sequence, TypeVar
+from urllib.parse import quote_plus
 
 import requests
 from bs4 import BeautifulSoup
@@ -302,3 +303,16 @@ def safe_json_loads(text: str) -> dict[str, Any] | None:
 
 def format_date_cn(value: date | None) -> str:
     return value.isoformat() if value else "未知日期"
+
+
+def doi_url(doi: str | None) -> str:
+    normalized = normalize_doi(doi)
+    return f"https://doi.org/{normalized}" if normalized else ""
+
+
+def google_scholar_url(title: str) -> str:
+    return "https://scholar.google.com/scholar?q=" + quote_plus(clean_text(title))
+
+
+def researchgate_url(title: str) -> str:
+    return "https://www.researchgate.net/search/publication?q=" + quote_plus(clean_text(title))

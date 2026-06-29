@@ -9,6 +9,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from config import AppConfig
 from utils import DailyReport, format_date_cn
+from utils import doi_url, google_scholar_url, researchgate_url
 
 
 def generate_html(report: DailyReport, config: AppConfig) -> str:
@@ -17,6 +18,9 @@ def generate_html(report: DailyReport, config: AppConfig) -> str:
         autoescape=select_autoescape(["html", "xml"]),
     )
     env.filters["date_cn"] = format_date_cn
+    env.globals["doi_url"] = doi_url
+    env.globals["google_scholar_url"] = google_scholar_url
+    env.globals["researchgate_url"] = researchgate_url
     template = env.get_template("email.html.j2")
     return template.render(report=report, subject=email_subject(report.report_date), Path=Path)
 

@@ -1,4 +1,4 @@
-"""Literature retrieval using OpenAlex and Crossref.
+"""Literature retrieval using OpenAlex, Crossref and ERIC.
 
 Semantic Scholar is intentionally not used.
 """
@@ -6,6 +6,7 @@ Semantic Scholar is intentionally not used.
 from __future__ import annotations
 
 import logging
+import html
 from datetime import date, datetime
 from typing import Any
 
@@ -24,6 +25,7 @@ from utils import (
 
 OPENALEX_ENDPOINT = "https://api.openalex.org/works"
 CROSSREF_ENDPOINT = "https://api.crossref.org/works"
+ERIC_ENDPOINT = "https://api.ies.ed.gov/eric/"
 
 
 SEARCH_QUERIES: tuple[str, ...] = (
@@ -31,6 +33,21 @@ SEARCH_QUERIES: tuple[str, ...] = (
     "artificial intelligence teaching primary education empirical",
     "artificial intelligence teaching elementary education empirical",
     "artificial intelligence teaching secondary education empirical",
+    "digital technology teaching primary education empirical",
+    "educational technology teacher professional development school",
+    "learning analytics teacher education school empirical",
+    "AI assessment primary education teacher empirical",
+    "teacher beliefs AI education school empirical",
+    "teacher digital competence primary school empirical",
+    "teacher digital literacy elementary school empirical",
+    "data literacy teachers school education empirical",
+    "technology integration elementary teachers empirical",
+    "digital transformation basic education teacher role empirical",
+    "AI supported learning elementary education teacher empirical",
+    "intelligent tutoring primary education teacher empirical",
+    "adaptive learning basic education teacher empirical",
+    "generative AI lesson planning teachers school",
+    "ChatGPT teacher education preservice teachers empirical",
     "generative AI classroom teaching school teachers empirical",
     "ChatGPT school education teacher empirical study",
     "teacher digital literacy artificial intelligence school education",
@@ -65,6 +82,10 @@ def search_recent_papers(
             papers.extend(_search_crossref(config, session, headers, query, window_start, window_end, logger))
         except Exception as exc:  # noqa: BLE001
             logger.exception("Crossref search failed for query=%s: %s", query, exc)
+        try:
+            papers.extend(_search_eric(config, session, headers, query, window_start, window_end, logger))
+        except Exception as exc:  # noqa: BLE001
+            logger.exception("ERIC search failed for query=%s: %s", query, exc)
 
     unique = unique_by_identity(papers)
     unique.sort(key=lambda p: p.published_date or date.min, reverse=True)
@@ -211,6 +232,101 @@ def _crossref_to_paper(item: dict[str, Any]) -> Paper:
         or (item.get("published") or {}).get("date-parts")
         or []
     )
+
+
+def _search_eric(
+    config: AppConfig,
+    session: requests.Session,
+    headers: dict[str, str],
+    query: str,
+    window_start: datetime,
+    window_end: datetime,
+    logger: logging.Logger,
+) -> list[Paper]:
+    params = {
+        "search": query,
+        "format": "json",
+        "start": 0,
+        "rows": min(50, max(25, config.max_papers * 10)),
+    }
+    data = request_json(
+        session,
+        ERIC_ENDPOINT,
+        params=params,
+        headers=headers,
+        timeout=config.request_timeout_seconds,
+        retries=config.request_retries,
+    )
+    docs = _extract_eric_docs(data)
+    papers = [_eric_to_paper(item) for item in docs if isinstance(item, dict)]
+    papers = [paper for paper in papers if _within_window_by_date(paper.published_date, window_start, window_end)]
+    logger.info("ERIC query=%r count=%s", query, len(papers))
+    return papers
+
+
+def _extract_eric_docs(data: dict[str, Any]) -> list[dict[str, Any]]:
+    for key in ("docs", "results", "items"):
+        value = data.get(key)
+        if isinstance(value, list):
+            return value
+    response = data.get("response")
+    if isinstance(response, dict) and isinstance(response.get("docs"), list):
+        return response["docs"]
+    return []
+
+
+def _eric_to_paper(item: dict[str, Any]) -> Paper:
+    title = _first_text(item, "title", "title_s", "title_display")
+    abstract = _first_text(item, "description", "abstract", "abstract_s")
+    journal = _first_text(item, "source", "source_s", "journal", "publication")
+    doi = _first_text(item, "doi", "doi_s")
+    url = _first_text(item, "url", "url_s", "eric_url")
+    eric_id = _first_text(item, "id", "ericNumber", "eric_number")
+    if not url and eric_id:
+        url = f"https://eric.ed.gov/?id={eric_id}"
+    published = parse_date(
+        _first_text(item, "publicationdateyear", "publicationDate", "publication_date", "year", "date")
+    )
+    authors_raw = item.get("author") or item.get("authors") or item.get("author_s") or []
+    if isinstance(authors_raw, str):
+        authors = [clean_text(part) for part in authors_raw.split(";") if clean_text(part)]
+    elif isinstance(authors_raw, list):
+        authors = [clean_text(str(part)) for part in authors_raw if clean_text(str(part))]
+    else:
+        authors = []
+    descriptors = item.get("descriptor") or item.get("descriptors") or item.get("subject") or []
+    if isinstance(descriptors, str):
+        keywords = [clean_text(part) for part in descriptors.split(";") if clean_text(part)]
+    elif isinstance(descriptors, list):
+        keywords = [clean_text(str(part)) for part in descriptors if clean_text(str(part))]
+    else:
+        keywords = []
+    issn = _first_text(item, "issn", "issn_s")
+    return Paper(
+        title=title,
+        abstract=abstract,
+        authors=authors,
+        published_date=published,
+        journal=journal,
+        doi=doi,
+        url=url,
+        source="ERIC",
+        language="en",
+        issns=[issn] if issn else [],
+        concepts=keywords,
+        keywords=keywords,
+        raw={"eric_id": eric_id},
+    )
+
+
+def _first_text(item: dict[str, Any], *keys: str) -> str:
+    for key in keys:
+        value = item.get(key)
+        if isinstance(value, list) and value:
+            return clean_text(html.unescape(str(value[0])))
+        if value:
+            return clean_text(html.unescape(str(value)))
+    return ""
     published = parse_date(date_parts[0] if date_parts else None)
     authors: list[str] = []
     for author in item.get("author") or []:
