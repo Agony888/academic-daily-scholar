@@ -45,6 +45,8 @@ jobs:
           MAX_PAPERS: "5"
           SEARCH_MONTHS: "3"
           PUBLICATION_YEARS: "1"
+          PRIMARY_SEARCH_DAYS: "3"
+          FALLBACK_SEARCH_YEARS: "3"
           SEEN_STATE_PATH: data/seen_papers.json
           REQUEST_TIMEOUT_SECONDS: "30"
           REQUEST_RETRIES: "3"
