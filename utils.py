@@ -40,6 +40,8 @@ class Paper:
     ssci_categories: list[str] = field(default_factory=list)
     quartile: str = ""
     impact_factor: str = ""
+    citescore: str = ""
+    publisher: str = ""
     filter_score: int = 0
     filter_reasons: list[str] = field(default_factory=list)
 
@@ -124,6 +126,7 @@ class DailyReport:
     items: list[ReportItem]
     markdown_path: Path | None = None
     word_path: Path | None = None
+    notice: str = ""
 
 
 def clean_text(value: str | None) -> str:
@@ -227,7 +230,17 @@ def request_json(
             last_error = exc
             if attempt == retries:
                 break
-            time.sleep(backoff_seconds * attempt)
+            retry_after = None
+            response = getattr(exc, "response", None)
+            if response is not None and getattr(response, "status_code", None) == 429:
+                retry_after_header = response.headers.get("Retry-After")
+                if retry_after_header:
+                    try:
+                        retry_after = float(retry_after_header)
+                    except ValueError:
+                        retry_after = None
+            delay = retry_after if retry_after is not None else backoff_seconds * (2 ** (attempt - 1))
+            time.sleep(delay)
     raise RuntimeError(f"Failed to fetch JSON from {url}: {last_error}") from last_error
 
 

@@ -127,7 +127,7 @@ DOI：{paper.doi}
     return PaperSummary(
         chinese_title=_value(data, "chinese_title", paper.title),
         authors_text=_value(data, "authors_text", ", ".join(paper.authors) or "摘要未说明"),
-        journal_impact=_value(data, "journal_impact", f"{paper.journal or '摘要未说明'}；影响因子/分区：白名单未提供"),
+        journal_impact=_value(data, "journal_impact", _journal_metadata_text(paper)),
         volume_issue_doi=_value(data, "volume_issue_doi", paper.doi or "摘要未说明"),
         online_date=_value(data, "online_date", str(paper.published_date or "摘要未说明")),
         research_abstract=_value(data, "research_abstract", "摘要未说明"),
@@ -185,6 +185,21 @@ def _value(data: dict[str, Any], key: str, default: str) -> str:
 
 def _fallback_parse_summary(content: str) -> dict[str, str]:
     return {"research_abstract": content.strip() or "模型未返回有效内容。"}
+
+
+def _journal_metadata_text(paper: Paper) -> str:
+    parts = [paper.journal or "摘要未说明"]
+    if paper.impact_factor:
+        parts.append(f"JIF/影响因子：{paper.impact_factor}")
+    if paper.quartile:
+        parts.append(f"JCR分区：{paper.quartile}")
+    if paper.citescore:
+        parts.append(f"CiteScore：{paper.citescore}")
+    if paper.publisher:
+        parts.append(f"出版社：{paper.publisher}")
+    if len(parts) == 1:
+        parts.append("影响因子/分区：白名单未提供")
+    return "；".join(parts)
 
 
 def _completion_content(response: Any) -> str:

@@ -13,7 +13,7 @@ from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
 
 from config import AppConfig
-from utils import DailyReport, ReportItem, format_date_cn, write_text_file
+from utils import DailyReport, Paper, ReportItem, format_date_cn, write_text_file
 
 
 def generate_markdown(report: DailyReport, config: AppConfig) -> Path:
@@ -148,6 +148,9 @@ def _add_cover(document: Document, report: DailyReport) -> None:
     subtitle_run.font.size = Pt(11)
     subtitle_run.font.color.rgb = RGBColor(89, 104, 130)
 
+    if report.notice:
+        _add_quote_block(document, report.notice)
+
     table = document.add_table(rows=4, cols=2)
     table.style = "Light Shading Accent 1"
     rows = [
@@ -199,7 +202,11 @@ def _add_one_paper(document: Document, index: int, item: ReportItem) -> None:
     table.style = "Light List Accent 1"
     _add_table_row(table, "标题", f"{paper.title} / {summary.chinese_title}")
     _add_table_row(table, "作者", summary.authors_text or (", ".join(paper.authors[:8]) if paper.authors else "摘要未说明"))
-    _add_table_row(table, "期刊及影响因子", summary.journal_impact or f"{paper.journal or '未知期刊'}；影响因子/分区：白名单未提供")
+    _add_table_row(table, "期刊及影响因子", summary.journal_impact or _journal_metadata_text(paper))
+    _add_table_row(table, "JIF/影响因子", paper.impact_factor or "白名单未提供")
+    _add_table_row(table, "JCR分区", paper.quartile or "白名单未提供")
+    _add_table_row(table, "CiteScore", paper.citescore or "白名单未提供")
+    _add_table_row(table, "出版社", paper.publisher or "白名单未提供")
     _add_table_row(table, "卷期/DOI", summary.volume_issue_doi or paper.doi or "摘要未说明")
     _add_table_row(table, "在线发表时间", summary.online_date or format_date_cn(paper.published_date))
     _add_table_row(table, "SSCI分类", "；".join(paper.ssci_categories) if paper.ssci_categories else "SSCI白名单匹配；分类未提供")
@@ -322,6 +329,8 @@ def build_markdown(report: DailyReport) -> str:
     lines.append("")
     lines.append(f"> 生成时间：{report.generated_at.strftime('%Y-%m-%d %H:%M:%S')}  ")
     lines.append(f"> 检索窗口：{report.window_start.strftime('%Y-%m-%d %H:%M')} — {report.window_end.strftime('%Y-%m-%d %H:%M')}（北京时间）")
+    if report.notice:
+        lines.append(f"> ⚠️ {report.notice}")
     lines.append("")
     lines.append("## 一、今日研究亮点总结")
     lines.append("")
@@ -355,13 +364,17 @@ def _item_markdown(index: int, item: ReportItem) -> list[str]:
     paper = item.paper
     summary = item.summary
     doi_or_url = paper.url or (f"https://doi.org/{paper.doi}" if paper.doi else "")
-    journal_impact = summary.journal_impact or f"{paper.journal or '未知期刊'}；影响因子/分区：白名单未提供"
+    journal_impact = summary.journal_impact or _journal_metadata_text(paper)
     lines = [
         f"### <a id=\"paper-{index}\"></a>{index}. {paper.title} / {summary.chinese_title}",
         "",
         f"- **标题**：{paper.title} / {summary.chinese_title}",
         f"- **作者**：{summary.authors_text or (', '.join(paper.authors[:8]) if paper.authors else '摘要未说明')}",
         f"- **期刊及影响因子**：{journal_impact}",
+        f"- **JIF/影响因子**：{paper.impact_factor or '白名单未提供'}",
+        f"- **JCR分区**：{paper.quartile or '白名单未提供'}",
+        f"- **CiteScore**：{paper.citescore or '白名单未提供'}",
+        f"- **出版社**：{paper.publisher or '白名单未提供'}",
         f"- **卷期/DOI**：{summary.volume_issue_doi or paper.doi or '摘要未说明'}",
         f"- **在线发表时间**：{summary.online_date or format_date_cn(paper.published_date)}",
         f"- **SSCI分类**：{'；'.join(paper.ssci_categories) if paper.ssci_categories else 'SSCI白名单匹配；分类未提供'}",
@@ -398,3 +411,18 @@ def _item_markdown(index: int, item: ReportItem) -> list[str]:
         ]
     )
     return lines
+
+
+def _journal_metadata_text(paper: Paper) -> str:
+    parts = [paper.journal or "未知期刊"]
+    if paper.impact_factor:
+        parts.append(f"JIF/影响因子：{paper.impact_factor}")
+    if paper.quartile:
+        parts.append(f"JCR分区：{paper.quartile}")
+    if paper.citescore:
+        parts.append(f"CiteScore：{paper.citescore}")
+    if paper.publisher:
+        parts.append(f"出版社：{paper.publisher}")
+    if len(parts) == 1:
+        parts.append("影响因子/分区：白名单未提供")
+    return "；".join(parts)

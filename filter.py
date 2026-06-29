@@ -214,6 +214,8 @@ class SsciWhitelist:
     issns: set[str] = field(default_factory=set)
     journal_categories: dict[str, list[str]] = field(default_factory=dict)
     issn_categories: dict[str, list[str]] = field(default_factory=dict)
+    journal_metadata: dict[str, dict[str, object]] = field(default_factory=dict)
+    issn_metadata: dict[str, dict[str, object]] = field(default_factory=dict)
     source_path: Path | None = None
 
     @property
@@ -237,6 +239,63 @@ class SsciWhitelist:
         )
 
     def categories_for(self, paper: Paper) -> list[str]:
+        metadata = self.metadata_for(paper)
+        categories = metadata.get("categories", [])
+        if isinstance(categories, list):
+            return sorted({str(item) for item in categories if str(item).strip()})
+        return []
+
+    def metadata_for(self, paper: Paper) -> dict[str, object]:
+        metadata: dict[str, object] = {}
+        categories: list[str] = []
+
+        def merge(values: dict[str, object]) -> None:
+            nonlocal categories
+            for key, value in values.items():
+                if key == "categories":
+                    if isinstance(value, list):
+                        categories.extend(str(item) for item in value if str(item).strip())
+                    elif value:
+                        categories.append(str(value))
+                elif value and not metadata.get(key):
+                    metadata[key] = value
+
+        for issn in {normalize_issn(value) for value in paper.issns}:
+            if issn and issn in self.issn_metadata:
+                merge(self.issn_metadata[issn])
+            if issn and issn in self.issn_categories:
+                merge({"categories": self.issn_categories[issn]})
+
+        journal = normalize_journal_name(paper.journal)
+        if journal in self.journal_metadata:
+            merge(self.journal_metadata[journal])
+        if journal in self.journal_categories:
+            merge({"categories": self.journal_categories[journal]})
+        elif journal:
+            for name, values in self.journal_metadata.items():
+                if len(name) >= 10 and (name in journal or journal in name):
+                    merge(values)
+                    break
+            if not categories:
+                for name, values in self.journal_categories.items():
+                    if len(name) >= 10 and (name in journal or journal in name):
+                        merge({"categories": values})
+                        break
+
+        if categories:
+            metadata["categories"] = sorted(set(categories))
+        return metadata
+
+    def apply_metadata(self, paper: Paper) -> None:
+        metadata = self.metadata_for(paper)
+        categories = metadata.get("categories", [])
+        paper.ssci_categories = categories if isinstance(categories, list) else []
+        paper.impact_factor = str(metadata.get("impact_factor") or paper.impact_factor or "")
+        paper.quartile = str(metadata.get("quartile") or paper.quartile or "")
+        paper.citescore = str(metadata.get("citescore") or paper.citescore or "")
+        paper.publisher = str(metadata.get("publisher") or paper.publisher or "")
+
+    def _legacy_categories_for(self, paper: Paper) -> list[str]:
         categories: list[str] = []
         for issn in {normalize_issn(value) for value in paper.issns}:
             if issn and issn in self.issn_categories:
@@ -267,11 +326,13 @@ def load_ssci_whitelist(path: Path | None, logger: logging.Logger | None = None)
 
     try:
         rows = _read_xlsx_rows(path)
-        names, issns, journal_categories, issn_categories = _extract_whitelist_values(rows)
+        names, issns, journal_categories, issn_categories, journal_metadata, issn_metadata = _extract_whitelist_values(rows)
         whitelist.journal_names = names
         whitelist.issns = issns
         whitelist.journal_categories = journal_categories
         whitelist.issn_categories = issn_categories
+        whitelist.journal_metadata = journal_metadata
+        whitelist.issn_metadata = issn_metadata
         if logger:
             logger.info("SSCI白名单加载成功 path=%s journals=%s issns=%s", path, len(names), len(issns))
     except Exception as exc:  # noqa: BLE001
@@ -296,8 +357,17 @@ def filter_papers(
 
     for paper in papers:
         ok, score, reasons = _score_paper(paper, whitelist, config.ssci_filter_mode)
-        paper.ssci_matched = whitelist.is_match(paper) if whitelist.available else False
-        paper.ssci_categories = whitelist.categories_for(paper) if whitelist.available else []
+        use_whitelist = config.ssci_filter_mode != "off" and whitelist.available
+        paper.ssci_matched = whitelist.is_match(paper) if use_whitelist else False
+        if paper.ssci_matched:
+            whitelist.apply_metadata(paper)
+        elif not use_whitelist:
+            paper.ssci_matched = False
+            paper.ssci_categories = []
+            paper.impact_factor = ""
+            paper.quartile = ""
+            paper.citescore = ""
+            paper.publisher = ""
         paper.filter_score = score
         paper.filter_reasons = reasons
         if ok and paper.identity not in seen:
@@ -343,8 +413,10 @@ def _score_paper(paper: Paper, whitelist: SsciWhitelist, mode: str) -> tuple[boo
         ]
     ).lower()
 
-    ssci_match = whitelist.is_match(paper) if whitelist.available else False
-    if whitelist.available and not ssci_match:
+    normalized_mode = mode if mode in {"strict", "prefer", "off"} else "strict"
+    use_whitelist = normalized_mode != "off" and whitelist.available
+    ssci_match = whitelist.is_match(paper) if use_whitelist else False
+    if normalized_mode == "strict" and use_whitelist and not ssci_match:
         return False, -50, ["not_in_ssci_whitelist"]
 
     excluded = [kw for kw in EXCLUDE_KEYWORDS if kw.lower() in text]
@@ -407,7 +479,7 @@ def _score_paper(paper: Paper, whitelist: SsciWhitelist, mode: str) -> tuple[boo
         score -= 8
         reasons.append("empirical_signal_missing_but_allowed")
 
-    if ssci_match:
+    if normalized_mode in {"strict", "prefer"} and ssci_match:
         score += 30
         reasons.append("ssci_whitelist")
     reasons.extend(f"stage:{kw}" for kw in stage_hits[:4])
@@ -480,11 +552,22 @@ def _cell_value(cell: ET.Element, shared_strings: list[str], ns: dict[str, str])
     return clean_text(raw)
 
 
-def _extract_whitelist_values(rows: list[list[str]]) -> tuple[set[str], set[str], dict[str, list[str]], dict[str, list[str]]]:
+def _extract_whitelist_values(
+    rows: list[list[str]],
+) -> tuple[
+    set[str],
+    set[str],
+    dict[str, list[str]],
+    dict[str, list[str]],
+    dict[str, dict[str, object]],
+    dict[str, dict[str, object]],
+]:
     journal_names: set[str] = set()
     issns: set[str] = set()
     journal_categories: dict[str, list[str]] = {}
     issn_categories: dict[str, list[str]] = {}
+    journal_metadata: dict[str, dict[str, object]] = {}
+    issn_metadata: dict[str, dict[str, object]] = {}
 
     header: list[str] | None = None
     header_index = -1
@@ -498,12 +581,32 @@ def _extract_whitelist_values(rows: list[list[str]]) -> tuple[set[str], set[str]
     if header:
         journal_cols = [i for i, cell in enumerate(header) if _is_journal_header(cell)]
         issn_cols = [i for i, cell in enumerate(header) if _is_issn_header(cell)]
-        category_cols = [i for i, cell in enumerate(header) if "categor" in cell or "学科" in cell or "类别" in cell]
+        category_cols = [i for i, cell in enumerate(header) if _is_category_header(cell)]
+        impact_cols = [i for i, cell in enumerate(header) if _is_impact_factor_header(cell)]
+        quartile_cols = [i for i, cell in enumerate(header) if _is_quartile_header(cell)]
+        citescore_cols = [i for i, cell in enumerate(header) if _is_citescore_header(cell)]
+        publisher_cols = [i for i, cell in enumerate(header) if _is_publisher_header(cell)]
         for row in rows[header_index + 1 :]:
             row_categories: list[str] = []
             for idx in category_cols:
                 if idx < len(row):
                     row_categories.extend(_split_categories(row[idx]))
+            metadata: dict[str, object] = {}
+            if row_categories:
+                metadata["categories"] = sorted(set(row_categories))
+            impact_factor = _first_cell(row, impact_cols)
+            quartile = _normalize_quartile(_first_cell(row, quartile_cols))
+            citescore = _first_cell(row, citescore_cols)
+            publisher = _first_cell(row, publisher_cols)
+            if impact_factor:
+                metadata["impact_factor"] = impact_factor
+            if quartile:
+                metadata["quartile"] = quartile
+            if citescore:
+                metadata["citescore"] = citescore
+            if publisher:
+                metadata["publisher"] = publisher
+
             row_journals: list[str] = []
             row_issns: list[str] = []
             for idx in journal_cols:
@@ -517,24 +620,69 @@ def _extract_whitelist_values(rows: list[list[str]]) -> tuple[set[str], set[str]
             for name in row_journals:
                 if row_categories:
                     journal_categories[name] = row_categories
+                if metadata:
+                    journal_metadata[name] = metadata
             for issn in row_issns:
                 if row_categories:
                     issn_categories[issn] = row_categories
+                if metadata:
+                    issn_metadata[issn] = metadata
     else:
         for row in rows:
             for cell in row:
                 _add_issns(cell, issns)
                 _add_journal_name(cell, journal_names)
 
-    return journal_names, issns, journal_categories, issn_categories
+    return journal_names, issns, journal_categories, issn_categories, journal_metadata, issn_metadata
 
 
 def _is_journal_header(cell: str) -> bool:
-    return any(term in cell for term in ("journal", "source title", "刊名", "期刊", "title"))
+    normalized = cell.strip().lower().replace("_", " ")
+    return any(term in normalized for term in ("journal name", "journal title", "source title", "journal", "刊名", "期刊", "title"))
 
 
 def _is_issn_header(cell: str) -> bool:
     return "issn" in cell
+
+
+def _is_category_header(cell: str) -> bool:
+    normalized = cell.strip().lower().replace("_", " ")
+    return any(term in normalized for term in ("categor", "subject", "web of science categories", "wos categories", "学科", "类别"))
+
+
+def _is_impact_factor_header(cell: str) -> bool:
+    normalized = re.sub(r"[^a-z0-9一-鿿]+", "", cell.lower())
+    return any(term in normalized for term in ("jif", "impactfactor", "journalimpactfactor", "影响因子"))
+
+
+def _is_quartile_header(cell: str) -> bool:
+    normalized = cell.strip().lower().replace("_", " ")
+    return any(term in normalized for term in ("quartile", "jcr quartile", "jcr", "分区"))
+
+
+def _is_citescore_header(cell: str) -> bool:
+    normalized = re.sub(r"[^a-z0-9]+", "", cell.lower())
+    return "citescore" in normalized
+
+
+def _is_publisher_header(cell: str) -> bool:
+    normalized = cell.strip().lower().replace("_", " ")
+    return any(term in normalized for term in ("publisher", "出版社", "出版商"))
+
+
+def _first_cell(row: list[str], cols: list[int]) -> str:
+    for idx in cols:
+        if idx < len(row):
+            value = clean_text(row[idx])
+            if value:
+                return value
+    return ""
+
+
+def _normalize_quartile(value: str) -> str:
+    text = clean_text(value).upper()
+    match = re.search(r"\bQ[1-4]\b", text)
+    return match.group(0) if match else text
 
 
 def _add_issns(value: str, target: set[str]) -> list[str]:

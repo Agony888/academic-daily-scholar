@@ -64,34 +64,11 @@ def run_daily_job(*, send_email: bool | None = None) -> DailyReport:
         report_window_start = fallback_window_start
         logger.info("扩大检索后 selected=%s", len(selected))
 
+    notice = ""
     if len(selected) < config.max_papers:
-        logger.warning(
-            "严格查重后仍不足%s篇 selected=%s，将从近%s年严格候选中允许历史重复补足，并在筛选理由中标记",
-            config.max_papers,
-            len(selected),
-            config.fallback_search_years,
-        )
-        selected_ids = {paper.identity for paper in selected}
-        repeat_supplement = filter_papers(
-            all_papers,
-            config,
-            logger,
-            whitelist,
-            exclude_identities=selected_ids,
-            ignore_seen=True,
-        )
-        for paper in repeat_supplement:
-            if len(selected) >= config.max_papers:
-                break
-            if paper.identity in selected_ids:
-                continue
-            paper.filter_reasons.append("fallback_repeat_allowed_to_keep_daily_5")
-            selected.append(paper)
-            selected_ids.add(paper.identity)
-        logger.info("历史补足后 selected=%s", len(selected))
+        notice = f"今日不足{config.max_papers}篇，未重复推荐；实际筛选{len(selected)}篇。"
+        logger.warning("%s 可用候选不足，请检查SSCI白名单、主题规则或检索源状态。", notice)
 
-    if len(selected) < config.max_papers:
-        logger.error("可用候选不足%s篇，实际仅%s篇；请放宽主题/实证/SSCI规则或扩展数据源", config.max_papers, len(selected))
     items, hotspot, api_elapsed, failures = summarize_papers(selected, config, logger)
 
     report = DailyReport(
@@ -106,6 +83,7 @@ def run_daily_job(*, send_email: bool | None = None) -> DailyReport:
         api_elapsed_seconds=api_elapsed,
         hotspot_summary=hotspot,
         items=items,
+        notice=notice,
     )
 
     md_path = generate_markdown(report, config)

@@ -41,6 +41,14 @@ SEARCH_QUERIES: tuple[str, ...] = (
     "in-service teacher professional development AI digital transformation",
     "educational digital transformation teacher role school education",
     "AI lesson planning classroom assessment teacher education empirical",
+    "elementary mathematics teacher artificial intelligence",
+    "primary mathematics education digital technology",
+    "mathematics teacher professional development AI",
+    "mathematics teacher digital competence",
+    "ChatGPT mathematics education teacher",
+    "generative AI lesson planning mathematics education",
+    "rural primary mathematics teacher digital literacy",
+    "teacher reflection mathematics education artificial intelligence",
 )
 
 
@@ -56,7 +64,7 @@ def search_recent_papers(
     headers = {"User-Agent": config.user_agent}
     papers: list[Paper] = []
 
-    for query in SEARCH_QUERIES:
+    for query in dict.fromkeys(SEARCH_QUERIES):
         try:
             papers.extend(_search_openalex(config, session, headers, query, window_start, window_end, logger))
         except Exception as exc:  # noqa: BLE001 - keep daily job alive
