@@ -152,7 +152,7 @@ def _add_cover(document: Document, report: DailyReport) -> None:
     table.style = "Light Shading Accent 1"
     rows = [
         ("生成时间", report.generated_at.strftime("%Y-%m-%d %H:%M:%S（北京时间）")),
-        ("检索窗口", f"近1年：{report.window_start.strftime('%Y-%m-%d')} — {report.window_end.strftime('%Y-%m-%d')}"),
+        ("检索窗口", f"{report.window_start.strftime('%Y-%m-%d')} — {report.window_end.strftime('%Y-%m-%d')}"),
         ("检索与筛选", f"检索 {report.total_found} 篇；筛选 {report.total_filtered} 篇；AI成功 {report.total_success} 篇"),
         ("本地文件", "Markdown 与 Word 文档已保存至 daily/ 目录"),
     ]

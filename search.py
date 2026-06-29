@@ -87,7 +87,7 @@ def _search_openalex(
             [
                 "type:article",
                 "language:en",
-                f"from_publication_date:{(window_end.replace(year=window_end.year - config.publication_years)).date().isoformat()}",
+                f"from_publication_date:{window_start.date().isoformat()}",
                 f"to_publication_date:{window_end.date().isoformat()}",
             ]
         ),
@@ -107,7 +107,7 @@ def _search_openalex(
     )
     results = data.get("results", [])
     papers = [_openalex_to_paper(item) for item in results if isinstance(item, dict)]
-    papers = [paper for paper in papers if _within_publication_years(paper.published_date, window_end, config.publication_years)]
+    papers = [paper for paper in papers if _within_window_by_date(paper.published_date, window_start, window_end)]
     logger.info("OpenAlex query=%r count=%s", query, len(papers))
     return papers
 
@@ -175,7 +175,7 @@ def _search_crossref(
         "filter": ",".join(
             [
                 "type:journal-article",
-                f"from-pub-date:{(window_end.replace(year=window_end.year - config.publication_years)).date().isoformat()}",
+                f"from-pub-date:{window_start.date().isoformat()}",
                 f"until-pub-date:{window_end.date().isoformat()}",
             ]
         ),
@@ -194,7 +194,7 @@ def _search_crossref(
     )
     items = (data.get("message") or {}).get("items") or []
     papers = [_crossref_to_paper(item) for item in items if isinstance(item, dict)]
-    papers = [paper for paper in papers if _within_publication_years(paper.published_date, window_end, config.publication_years)]
+    papers = [paper for paper in papers if _within_window_by_date(paper.published_date, window_start, window_end)]
     logger.info("Crossref query=%r count=%s", query, len(papers))
     return papers
 

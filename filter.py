@@ -277,10 +277,13 @@ def filter_papers(
     config: AppConfig,
     logger: logging.Logger,
     whitelist: SsciWhitelist | None = None,
+    exclude_identities: set[str] | None = None,
 ) -> list[Paper]:
     whitelist = whitelist or load_ssci_whitelist(config.ssci_whitelist_path, logger)
     filtered: list[Paper] = []
-    seen = _load_seen_identities(config.seen_state_path)
+    seen = load_seen_identities(config.seen_state_path)
+    if exclude_identities:
+        seen.update(exclude_identities)
 
     for paper in papers:
         ok, score, reasons = _score_paper(paper, whitelist, config.ssci_filter_mode)
@@ -314,7 +317,7 @@ def filter_papers(
 
 
 def mark_papers_seen(path: Path, papers: list[Paper]) -> None:
-    seen = _load_seen_identities(path)
+    seen = load_seen_identities(path)
     seen.update(paper.identity for paper in papers)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(sorted(seen), ensure_ascii=False, indent=2), encoding="utf-8")
@@ -573,7 +576,7 @@ def _split_categories(value: str) -> list[str]:
     return [part.strip() for part in re.split(r"\s*\|\s*|;\s*|,\s*", text) if part.strip()]
 
 
-def _load_seen_identities(path: Path) -> set[str]:
+def load_seen_identities(path: Path) -> set[str]:
     if not path.exists():
         return set()
     try:

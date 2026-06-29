@@ -40,6 +40,8 @@ class AppConfig:
     max_papers: int
     search_months: int
     publication_years: int
+    primary_search_days: int
+    fallback_search_years: int
     seen_state_path: Path
     request_timeout_seconds: int
     request_retries: int
@@ -116,7 +118,7 @@ def load_config(validate: bool = True) -> AppConfig:
     logs_dir = root / os.getenv("LOGS_DIR", "logs")
     template_dir = root / os.getenv("TEMPLATE_DIR", "templates")
 
-    whitelist_raw = os.getenv("SSCI_WHITELIST_PATH", "data/SSCI期刊白名单_2026-06.xlsx").strip()
+    whitelist_raw = os.getenv("SSCI_WHITELIST_PATH", "data/ssci_whitelist_2026-06.xlsx").strip()
     whitelist_path = Path(whitelist_raw) if whitelist_raw else None
     if whitelist_path and not whitelist_path.is_absolute():
         whitelist_path = root / whitelist_path
@@ -145,6 +147,8 @@ def load_config(validate: bool = True) -> AppConfig:
         max_papers=_env_int("MAX_PAPERS", 5),
         search_months=_env_int("SEARCH_MONTHS", 3),
         publication_years=_env_int("PUBLICATION_YEARS", 1),
+        primary_search_days=_env_int("PRIMARY_SEARCH_DAYS", 3),
+        fallback_search_years=_env_int("FALLBACK_SEARCH_YEARS", 3),
         seen_state_path=root / os.getenv("SEEN_STATE_PATH", "data/seen_papers.json"),
         request_timeout_seconds=_env_int("REQUEST_TIMEOUT_SECONDS", 30),
         request_retries=_env_int("REQUEST_RETRIES", 3),

@@ -27,20 +27,50 @@ def run_daily_job(*, send_email: bool | None = None) -> DailyReport:
     tz = ZoneInfo(config.timezone)
     now = datetime.now(tz)
     window_end = now
-    window_start = now - timedelta(days=365 * config.publication_years)
+    primary_window_start = now - timedelta(days=config.primary_search_days)
+    fallback_window_start = now - timedelta(days=365 * config.fallback_search_years)
 
-    logger.info("Academic Daily Scholar started window_start=%s window_end=%s", window_start, window_end)
+    logger.info(
+        "Academic Daily Scholar started primary_window_start=%s fallback_window_start=%s window_end=%s",
+        primary_window_start,
+        fallback_window_start,
+        window_end,
+    )
     whitelist = load_ssci_whitelist(config.ssci_whitelist_path, logger)
-    papers = search_recent_papers(config, window_start, window_end, logger)
-    selected = filter_papers(papers, config, logger, whitelist)
+    primary_papers = search_recent_papers(config, primary_window_start, window_end, logger)
+    selected = filter_papers(primary_papers, config, logger, whitelist)
+    all_papers = list(primary_papers)
+    report_window_start = primary_window_start
+
+    if len(selected) < config.max_papers:
+        logger.info(
+            "近%s天筛选不足 target=%s selected=%s，自动扩大到近%s年",
+            config.primary_search_days,
+            config.max_papers,
+            len(selected),
+            config.fallback_search_years,
+        )
+        fallback_papers = search_recent_papers(config, fallback_window_start, window_end, logger)
+        all_papers.extend(fallback_papers)
+        selected_ids = {paper.identity for paper in selected}
+        supplement = filter_papers(
+            fallback_papers,
+            config,
+            logger,
+            whitelist,
+            exclude_identities=selected_ids,
+        )
+        selected.extend(supplement[: max(0, config.max_papers - len(selected))])
+        report_window_start = fallback_window_start
+        logger.info("扩大检索后 selected=%s", len(selected))
     items, hotspot, api_elapsed, failures = summarize_papers(selected, config, logger)
 
     report = DailyReport(
         report_date=now.date(),
         generated_at=now,
-        window_start=window_start,
+        window_start=report_window_start,
         window_end=window_end,
-        total_found=len(papers),
+        total_found=len(all_papers),
         total_filtered=len(selected),
         total_success=sum(1 for item in items if not item.summary.one_sentence.startswith("摘要生成失败")),
         total_failed=failures,
