@@ -49,7 +49,7 @@ jobs:
           REQUEST_TIMEOUT_SECONDS: "30"
           REQUEST_RETRIES: "3"
           OPENAI_TIMEOUT_SECONDS: "90"
-          SSCI_WHITELIST_PATH: data/SSCI期刊白名单_2026-06.xlsx
+          SSCI_WHITELIST_PATH: data/ssci_whitelist_2026-06.xlsx
           SSCI_FILTER_MODE: strict
         run: python main.py run-once
 
@@ -58,10 +58,13 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add daily logs
+
+          git pull --rebase origin main || true
+
+          git add daily logs data/seen_papers.json
           if git diff --cached --quiet; then
             echo "No generated files to commit."
           else
             git commit -m "chore: add daily academic report"
-            git push
+            git push || echo "Push skipped because remote changed. Reports were still generated in this run."
           fi
