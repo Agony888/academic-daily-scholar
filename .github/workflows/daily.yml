@@ -85,6 +85,49 @@ jobs:
           SSCI_FILTER_MODE: strict
         run: python main.py run-once
 
+      - name: Push Markdown report to Obsidian vault
+        env:
+          OBSIDIAN_VAULT_TOKEN: ${{ secrets.OBSIDIAN_VAULT_TOKEN }}
+          OBSIDIAN_VAULT_REPO: Agony888/obsidian-vault
+          OBSIDIAN_VAULT_DIR: 文献日报
+        run: |
+          set -euo pipefail
+
+          if [ -z "${OBSIDIAN_VAULT_TOKEN}" ]; then
+            echo "::warning::OBSIDIAN_VAULT_TOKEN is not configured. Skipping Obsidian vault sync."
+            exit 0
+          fi
+
+          latest_md="$(find daily -maxdepth 1 -type f -name '*.md' | sort | tail -n 1)"
+          if [ -z "${latest_md}" ]; then
+            echo "::warning::No Markdown report found under daily/. Skipping Obsidian vault sync."
+            exit 0
+          fi
+
+          report_file="$(basename "${latest_md}")"
+          report_date="${report_file%.md}"
+          report_year="${report_date:0:4}"
+          target_dir="${OBSIDIAN_VAULT_DIR}/${report_year}"
+          target_path="${target_dir}/${report_file}"
+
+          git clone --depth 1 "https://x-access-token:${OBSIDIAN_VAULT_TOKEN}@github.com/${OBSIDIAN_VAULT_REPO}.git" obsidian-vault
+          cd obsidian-vault
+          git checkout -B main
+          mkdir -p "${target_dir}"
+          cp "../${latest_md}" "${target_path}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${target_path}"
+
+          if git diff --cached --quiet; then
+            echo "No Obsidian vault changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Add academic daily report ${report_date}"
+          git push origin HEAD:main
+
       - name: Upload reports and logs
         if: always()
         uses: actions/upload-artifact@v4
