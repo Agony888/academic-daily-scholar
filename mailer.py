@@ -47,7 +47,7 @@ def send_daily_email(
 
     def _send() -> bool:
         with smtplib.SMTP_SSL(config.smtp_server, config.smtp_port, timeout=30) as smtp:
-            smtp.login(config.smtp_user, config.smtp_password)
+            smtp.login(config.smtp_user, config.smtp_auth_code)
             smtp.sendmail(config.smtp_user, [config.mail_to], message.as_string())
         return True
 
