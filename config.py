@@ -28,7 +28,7 @@ class AppConfig:
     smtp_server: str
     smtp_port: int
     smtp_user: str
-    smtp_password: str
+    smtp_auth_code: str
     mail_to: str
     mail_from_name: str
     project_root: Path
@@ -135,7 +135,7 @@ def load_config(validate: bool = True) -> AppConfig:
         smtp_server=(os.getenv("SMTP_SERVER") or "smtp.163.com").strip(),
         smtp_port=_env_int("SMTP_PORT", 465),
         smtp_user=(os.getenv("SMTP_EMAIL") or os.getenv("SMTP_USER") or "").strip(),
-        smtp_password=(os.getenv("SMTP_AUTH_CODE") or os.getenv("SMTP_PASSWORD") or "").strip(),
+        smtp_auth_code=(os.getenv("SMTP_AUTH_CODE") or os.getenv("SMTP_PASSWORD") or "").strip(),
         mail_to=_normalize_mail_to(os.getenv("MAIL_TO") or "agony2023@qq.com"),
         mail_from_name=os.getenv("MAIL_FROM_NAME", "Academic Daily Scholar").strip(),
         project_root=root,
@@ -171,7 +171,7 @@ def load_config(validate: bool = True) -> AppConfig:
         if config.mail_enabled:
             if not config.smtp_user:
                 missing.append("SMTP_EMAIL")
-            if not config.smtp_password:
+            if not config.smtp_auth_code:
                 missing.append("SMTP_AUTH_CODE")
             if not config.mail_to:
                 missing.append("MAIL_TO")
