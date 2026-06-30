@@ -19,7 +19,7 @@ def make_report_config(tmp_path: Path) -> AppConfig:
         smtp_server="smtp.163.com",
         smtp_port=465,
         smtp_user="sender@example.com",
-        smtp_password="secret",
+        smtp_auth_code="secret",
         mail_to="to@example.com",
         mail_from_name="Academic Daily Scholar",
         project_root=tmp_path,
@@ -113,4 +113,3 @@ def test_generate_markdown_word_and_html(tmp_path: Path) -> None:
     assert "今日不足5篇，未重复推荐" in html
     assert "6.2" in html
     assert "Q1" in html
-
