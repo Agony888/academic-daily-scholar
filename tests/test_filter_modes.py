@@ -18,7 +18,7 @@ def make_config(tmp_path: Path, mode: str) -> AppConfig:
         smtp_server="smtp.163.com",
         smtp_port=465,
         smtp_user="sender@example.com",
-        smtp_password="secret",
+        smtp_auth_code="secret",
         mail_to="to@example.com",
         mail_from_name="Academic Daily Scholar",
         project_root=tmp_path,
@@ -94,4 +94,3 @@ def test_off_mode_ignores_whitelist_matching_and_boost(tmp_path: Path) -> None:
     assert {paper.journal for paper in kept} == {"Journal of Teacher Education", "Education Technology Review"}
     assert all(not paper.ssci_matched for paper in kept)
     assert all("ssci_whitelist" not in paper.filter_reasons for paper in kept)
-
