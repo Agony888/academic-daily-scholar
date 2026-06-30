@@ -27,6 +27,68 @@ CROSSREF_ENDPOINT = "https://api.crossref.org/works"
 
 
 SEARCH_QUERIES: tuple[str, ...] = (
+    "artificial intelligence education",
+    "AI education",
+    "artificial intelligence in education",
+    "generative AI education",
+    "large language models education",
+    "LLM education",
+    "ChatGPT education",
+    "AI assisted teaching education",
+    "AI assisted learning education",
+    "AI classroom teaching",
+    "AI school education",
+    "K-12 artificial intelligence education",
+    "educational technology artificial intelligence",
+    "digital education artificial intelligence",
+    "technology enhanced learning artificial intelligence",
+    "intelligent tutoring education",
+    "adaptive learning education",
+    "learning analytics education",
+    "automated feedback education",
+    "educational data mining education",
+    "teacher artificial intelligence education",
+    "teachers artificial intelligence education",
+    "teacher AI literacy",
+    "teacher digital literacy",
+    "teacher digital competence",
+    "teacher data literacy",
+    "teacher education artificial intelligence",
+    "pre-service teachers artificial intelligence education",
+    "preservice teachers artificial intelligence education",
+    "in-service teachers artificial intelligence education",
+    "teacher professional development artificial intelligence",
+    "teacher professional development digital technology",
+    "teacher technology integration artificial intelligence",
+    "teacher reflection artificial intelligence",
+    "AI lesson planning teacher education",
+    "AI classroom assessment teachers",
+    "digital transformation teacher education",
+    "rural teachers digital education",
+    "students artificial intelligence education",
+    "student artificial intelligence education",
+    "students ChatGPT education",
+    "student ChatGPT education",
+    "students generative AI learning",
+    "student generative AI learning",
+    "students digital learning artificial intelligence",
+    "students AI literacy education",
+    "mathematics education artificial intelligence",
+    "mathematics education generative AI",
+    "mathematics education ChatGPT",
+    "mathematics education digital technology",
+    "mathematics teaching artificial intelligence",
+    "mathematics learning artificial intelligence",
+    "mathematics teacher artificial intelligence",
+    "mathematics teacher digital competence",
+    "mathematics teacher professional development",
+    "primary mathematics education",
+    "elementary mathematics education",
+    "primary school mathematics education",
+    "elementary school mathematics education",
+    "primary mathematics teacher artificial intelligence",
+    "elementary mathematics teacher artificial intelligence",
+    "STEM education artificial intelligence school",
     "artificial intelligence teaching preschool education empirical",
     "artificial intelligence teaching primary education empirical",
     "artificial intelligence teaching elementary education empirical",
@@ -77,7 +139,7 @@ def search_recent_papers(
     unique = unique_by_identity(papers)
     unique.sort(key=lambda p: p.published_date or date.min, reverse=True)
     logger.info("检索数量 total=%s unique=%s", len(papers), len(unique))
-    return unique[: max(config.max_papers * 80, 200)]
+    return unique[: max(config.max_papers * 150, 500)]
 
 
 def _search_openalex(
@@ -100,7 +162,7 @@ def _search_openalex(
             ]
         ),
         "sort": "publication_date:desc",
-        "per-page": min(50, max(25, config.max_papers * 10)),
+        "per-page": min(100, max(50, config.max_papers * 20)),
         "mailto": "agony2023@qq.com",
     }
     if config.openalex_api_key:
@@ -189,7 +251,7 @@ def _search_crossref(
         ),
         "sort": "published",
         "order": "desc",
-        "rows": min(50, max(25, config.max_papers * 10)),
+        "rows": min(100, max(50, config.max_papers * 20)),
         "mailto": "agony2023@qq.com",
     }
     data = request_json(
@@ -259,5 +321,4 @@ def _within_window_by_date(published: date | None, window_start: datetime, windo
 def _within_publication_years(published: date | None, window_end: datetime, years: int) -> bool:
     if published is None:
         return True
-    start = window_end.replace(year=window_end.year - years).date()
-    return start <= published <= window_end.date()
+    return published >= date(window_end.year - years, window_end.month, window_end.day)
