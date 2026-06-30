@@ -2,9 +2,9 @@ name: Academic Daily Scholar
 
 on:
   schedule:
-    # GitHub Actions uses UTC. 00:17 UTC = 08:17 Asia/Shanghai.
+    # GitHub Actions uses UTC. 00:50 UTC = 08:50 Asia/Shanghai.
     # Avoid running exactly at the top of the hour because scheduled workflows may be delayed or dropped during GitHub Actions peak load.
-    - cron: "17 0 * * *"
+    - cron: "50 0 * * *"
   workflow_dispatch:
 
 permissions:
