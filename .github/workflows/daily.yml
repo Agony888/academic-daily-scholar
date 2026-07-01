@@ -18,21 +18,54 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Check today's report in Obsidian vault
+        env:
+          OBSIDIAN_VAULT_TOKEN: ${{ secrets.OBSIDIAN_VAULT_TOKEN }}
+          OBSIDIAN_VAULT_REPO: Agony888/obsidian-vault
+          OBSIDIAN_VAULT_DIR: 文献日报
+          TIMEZONE: Asia/Shanghai
+        run: |
+          set -euo pipefail
+          echo "SKIP_TODAY_REPORT=false" >> "$GITHUB_ENV"
+
+          if [ -z "${OBSIDIAN_VAULT_TOKEN}" ]; then
+            echo "::warning::OBSIDIAN_VAULT_TOKEN is not configured. Cannot check whether today's report already exists."
+            exit 0
+          fi
+
+          report_date="$(TZ="${TIMEZONE}" date +%F)"
+          report_year="${report_date:0:4}"
+          target_path="${OBSIDIAN_VAULT_DIR}/${report_year}/${report_date}.md"
+
+          git clone --depth 1 "https://x-access-token:${OBSIDIAN_VAULT_TOKEN}@github.com/${OBSIDIAN_VAULT_REPO}.git" obsidian-vault-check
+
+          if [ -f "obsidian-vault-check/${target_path}" ]; then
+            echo "Today's report already exists at ${target_path}. Skipping generation, mail, and push."
+            echo "SKIP_TODAY_REPORT=true" >> "$GITHUB_ENV"
+            exit 0
+          fi
+
+          echo "Today's report does not exist at ${target_path}. Continuing."
+
       - name: Set up Python 3.12
+        if: env.SKIP_TODAY_REPORT != 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: pip
 
       - name: Install dependencies
+        if: env.SKIP_TODAY_REPORT != 'true'
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run tests
+        if: env.SKIP_TODAY_REPORT != 'true'
         run: pytest
 
       - name: Check configuration
+        if: env.SKIP_TODAY_REPORT != 'true'
         env:
           OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -59,6 +92,7 @@ jobs:
         run: python main.py check-config
 
       - name: Run Academic Daily Scholar
+        if: env.SKIP_TODAY_REPORT != 'true'
         env:
           OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -85,6 +119,7 @@ jobs:
         run: python main.py run-once
 
       - name: Push Markdown report to Obsidian vault
+        if: env.SKIP_TODAY_REPORT != 'true'
         env:
           OBSIDIAN_VAULT_TOKEN: ${{ secrets.OBSIDIAN_VAULT_TOKEN }}
           OBSIDIAN_VAULT_REPO: Agony888/obsidian-vault
