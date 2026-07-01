@@ -1,0 +1,114 @@
+name: AI Education Literature Push
+
+on:
+  schedule:
+    # GitHub Actions uses UTC. 00:30 UTC = 08:30 Asia/Shanghai.
+    - cron: "30 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ai-education:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest
+
+      - name: Check configuration
+        env:
+          OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
+          OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
+          SMTP_SERVER: smtp.163.com
+          SMTP_EMAIL: ${{ secrets.SMTP_EMAIL }}
+          SMTP_AUTH_CODE: ${{ secrets.SMTP_AUTH_CODE }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          MAIL_FROM_NAME: AI Education Literature Push
+          MAIL_ENABLED: "true"
+          TIMEZONE: Asia/Shanghai
+          MAX_PAPERS: "5"
+          SEARCH_MONTHS: "36"
+          PUBLICATION_YEARS: "3"
+          PRIMARY_SEARCH_DAYS: "1095"
+          FALLBACK_SEARCH_YEARS: "3"
+          SEEN_STATE_PATH: data/seen_ai_education_papers.json
+          REQUEST_TIMEOUT_SECONDS: "30"
+          REQUEST_RETRIES: "3"
+          OPENAI_TIMEOUT_SECONDS: "90"
+          SSCI_WHITELIST_PATH: data/ssci_whitelist_2026-06.xlsx
+          SSCI_FILTER_MODE: strict
+        run: python main.py check-config
+
+      - name: Run AI education literature push
+        env:
+          OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
+          OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
+          SMTP_SERVER: smtp.163.com
+          SMTP_EMAIL: ${{ secrets.SMTP_EMAIL }}
+          SMTP_AUTH_CODE: ${{ secrets.SMTP_AUTH_CODE }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          MAIL_FROM_NAME: AI Education Literature Push
+          MAIL_ENABLED: "true"
+          TIMEZONE: Asia/Shanghai
+          MAX_PAPERS: "5"
+          SEARCH_MONTHS: "36"
+          PUBLICATION_YEARS: "3"
+          PRIMARY_SEARCH_DAYS: "1095"
+          FALLBACK_SEARCH_YEARS: "3"
+          SEEN_STATE_PATH: data/seen_ai_education_papers.json
+          REQUEST_TIMEOUT_SECONDS: "30"
+          REQUEST_RETRIES: "3"
+          OPENAI_TIMEOUT_SECONDS: "90"
+          SSCI_WHITELIST_PATH: data/ssci_whitelist_2026-06.xlsx
+          SSCI_FILTER_MODE: strict
+        run: python ai_education_push.py
+
+      - name: Persist AI education seen state
+        run: |
+          set -euo pipefail
+          if [ ! -f data/seen_ai_education_papers.json ]; then
+            echo "No AI education seen state file found. Skipping persistence."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/seen_ai_education_papers.json
+          if git diff --cached --quiet; then
+            echo "No AI education seen-state changes to commit."
+            exit 0
+          fi
+          git commit -m "Update AI education seen papers"
+          git push origin HEAD:main
+
+      - name: Upload AI education reports and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-education-literature-output
+          if-no-files-found: ignore
+          path: |
+            daily/*_AI教育专题文献推送.md
+            daily/*_AI教育专题文献推送.docx
+            logs/
+            data/seen_ai_education_papers.json
