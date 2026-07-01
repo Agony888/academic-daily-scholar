@@ -7,8 +7,8 @@ especially preferred, but the topic gate also accepts AI-assisted teaching,
 subject-specific AI integration, teacher digital/AI/intelligent/data literacy,
 AI integration in preservice and in-service teacher education, and teaching or
 teacher-role change under educational digital transformation. The search window
-is three years, with a separate seen-state file and standardized output file
-names.
+is three years. Selection is ranked primarily by topic relevance, not by whether
+the paper was published today.
 """
 
 from __future__ import annotations
@@ -71,17 +71,29 @@ AI_PRIORITY_SEARCH_QUERIES: tuple[str, ...] = (
     "AI lower secondary education",
     "school education artificial intelligence teaching",
     "classroom teaching artificial intelligence school",
-    # Subject-specific AI integration.
+    # Subject-specific AI integration: Chinese, mathematics, English and other subjects.
     "mathematics education artificial intelligence primary school",
     "mathematics teaching artificial intelligence elementary school",
     "mathematics learning artificial intelligence K-12",
+    "math education generative AI school",
+    "AI assisted mathematics teaching",
+    "Chinese language education artificial intelligence",
+    "Chinese language teaching artificial intelligence school",
+    "Chinese writing instruction artificial intelligence",
+    "language arts education artificial intelligence school",
+    "native language education artificial intelligence",
+    "first language writing instruction artificial intelligence",
+    "reading education artificial intelligence school",
+    "writing instruction artificial intelligence school",
+    "English education artificial intelligence school",
+    "English language teaching artificial intelligence",
+    "EFL teaching artificial intelligence",
+    "ESL teaching artificial intelligence",
+    "AI assisted English learning school",
     "science education artificial intelligence primary school",
     "science teaching artificial intelligence middle school",
     "STEM education artificial intelligence school",
     "language education artificial intelligence primary school",
-    "English education artificial intelligence school",
-    "reading education artificial intelligence school",
-    "writing instruction artificial intelligence school",
     "subject teaching artificial intelligence school education",
     "curriculum artificial intelligence basic education",
     "disciplinary teaching artificial intelligence education",
@@ -95,7 +107,6 @@ AI_PRIORITY_SEARCH_QUERIES: tuple[str, ...] = (
     "teachers digital literacy artificial intelligence",
     "teachers digital competence artificial intelligence",
     "teachers data literacy digital education",
-    "teacher digital literacy preschool education",
     "teacher digital literacy primary education",
     "teacher digital competence basic education",
     "teacher AI literacy school education",
@@ -247,9 +258,17 @@ def _has_subject_ai_theme(text: str) -> bool:
         "stem",
         "language",
         "english",
+        "efl",
+        "esl",
         "reading",
         "writing",
         "literacy",
+        "chinese language",
+        "chinese writing",
+        "language arts",
+        "native language",
+        "first language",
+        "mother tongue",
         "curriculum",
         "subject teaching",
         "disciplinary",
@@ -378,10 +397,10 @@ def _prioritize_defined_scope(paper: Paper, whitelist, mode: str):  # noqa: ANN0
 
     topic_hits: list[str] = []
     if subject_ai:
-        score += 45
+        score += 50
         topic_hits.append("subject_ai_integration")
     if ai_teaching:
-        score += 42
+        score += 44
         topic_hits.append("ai_teaching_application")
     if teacher_literacy:
         score += 40
@@ -405,6 +424,70 @@ def _prioritize_defined_scope(paper: Paper, whitelist, mode: str):  # noqa: ANN0
     return True, score, reasons + [f"defined_scope:{hit}" for hit in topic_hits]
 
 
+def _relevance_sort_key(paper: Paper) -> tuple[int, int, int, int, int, int, int, int, int]:
+    """Rank papers mainly by relevance; publication date is only the final tie-breaker."""
+
+    text = _paper_text(paper)
+    return (
+        paper.filter_score,
+        int(_has_subject_ai_theme(text)),
+        int(_has_ai_teaching_application(text)),
+        int(_has_teacher_literacy_theme(text)),
+        int(_has_teacher_education_ai_integration(text)),
+        int(_has_digital_transformation_teacher_role(text)),
+        int(_has_preschool_primary_or_junior_stage(text)),
+        int(paper.ssci_matched),
+        paper.published_date.toordinal() if paper.published_date else 0,
+    )
+
+
+def filter_papers_by_relevance(
+    papers: list[Paper],
+    config,
+    logger,
+    whitelist=None,
+    exclude_identities: set[str] | None = None,
+    ignore_seen: bool = False,
+) -> list[Paper]:
+    """Filter topic papers and select by relevance rather than newest-first ranking."""
+
+    whitelist = whitelist or paper_filter.load_ssci_whitelist(config.ssci_whitelist_path, logger)
+    filtered: list[Paper] = []
+    seen = set() if ignore_seen else paper_filter.load_seen_identities(config.seen_state_path)
+    if exclude_identities:
+        seen.update(exclude_identities)
+
+    for paper in papers:
+        ok, score, reasons = _prioritize_defined_scope(paper, whitelist, config.ssci_filter_mode)
+        use_whitelist = config.ssci_filter_mode != "off" and whitelist.available
+        paper.ssci_matched = whitelist.is_match(paper) if use_whitelist else False
+        if paper.ssci_matched:
+            whitelist.apply_metadata(paper)
+        elif not use_whitelist:
+            paper.ssci_matched = False
+            paper.ssci_categories = []
+            paper.impact_factor = ""
+            paper.quartile = ""
+            paper.citescore = ""
+            paper.publisher = ""
+        paper.filter_score = score
+        paper.filter_reasons = reasons
+        if ok and paper.identity not in seen:
+            filtered.append(paper)
+
+    filtered.sort(key=_relevance_sort_key, reverse=True)
+    selected = filtered[: config.max_papers]
+    logger.info(
+        "AI专题相关度筛选完成 input=%s kept=%s selected=%s whitelist_available=%s mode=%s sort=relevance_first",
+        len(papers),
+        len(filtered),
+        len(selected),
+        whitelist.available,
+        config.ssci_filter_mode,
+    )
+    return selected
+
+
 def _report_stem(report: DailyReport) -> str:
     return f"{report.report_date.isoformat()}_{AI_FILE_SUFFIX}"
 
@@ -426,7 +509,7 @@ def _special_markdown_content(report: DailyReport) -> str:
     if marker in content:
         content = content.replace(
             marker,
-            f"{marker}\n> 专题范围：聚焦教学相关研究，优先推荐学前、小学、初中及K-12场景；主题涵盖AI辅助教学/学习/评价、学科融合AI、教师数字/智能/数据素养、职前与在职教师培训中的AI整合、教育数字化背景下的教学变革与教师角色；检索窗口：近三年；去重策略：跨次推送不重复推荐。",
+            f"{marker}\n> 专题范围：聚焦教学相关研究，优先推荐语文、数学、英语等学科融合AI，兼顾学前、小学、初中及K-12场景；主题涵盖AI辅助教学/学习/评价、教师数字/智能/数据素养、职前与在职教师培训中的AI整合、教育数字化背景下的教学变革与教师角色；检索窗口：近三年；排序策略：按主题相关度优先，而非按发表日期优先；去重策略：跨次推送不重复推荐。",
             1,
         )
     return content
@@ -456,11 +539,12 @@ def generate_ai_education_html(report: DailyReport, config) -> str:  # noqa: ANN
 
 
 def ai_education_subject(report_date) -> str:  # noqa: ANN001
-    return f"{AI_SUBJECT}{report_date.isoformat()} 近三年教学与教师数字素养研究"
+    return f"{AI_SUBJECT}{report_date.isoformat()} 近三年学科教学AI与教师数字素养研究"
 
 
 def patch_pipeline() -> None:
     paper_filter._score_paper = _prioritize_defined_scope  # type: ignore[attr-defined]
+    daily_main.filter_papers = filter_papers_by_relevance
     search_module.SEARCH_QUERIES = tuple(dict.fromkeys(AI_PRIORITY_SEARCH_QUERIES + _ORIGINAL_SEARCH_QUERIES))
     daily_main.generate_markdown = generate_ai_education_markdown
     daily_main.generate_word = generate_ai_education_word
