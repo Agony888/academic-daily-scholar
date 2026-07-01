@@ -2,10 +2,8 @@ name: Academic Daily Scholar
 
 on:
   schedule:
-    # GitHub Actions uses UTC. 08:00 UTC = 16:00 Asia/Shanghai; 09:00 UTC = 17:00 Asia/Shanghai.
-    # Two daily runs reduce the risk of missed scheduled triggers.
-    - cron: "0 8 * * *"
-    - cron: "0 9 * * *"
+    # GitHub Actions uses UTC. 00:00 UTC = 08:00 Asia/Shanghai.
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 permissions:
