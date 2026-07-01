@@ -1,12 +1,14 @@
-"""Dedicated AI-prioritized preschool and basic education literature push.
+"""Dedicated AI-prioritized teaching and teacher literacy literature push.
 
 This entrypoint reuses the main Academic Daily Scholar pipeline, but narrows the
-special push toward preschool education and basic education, especially primary
-and lower-secondary contexts. It prioritizes AI use in teaching, subject-specific
-AI integration, teacher digital/AI/data literacy, AI integration in preservice
-and in-service teacher education, and teaching change or teacher role change
-under educational digital transformation. The search window is three years, with
-a separate seen-state file and standardized output file names.
+special push toward teaching-related studies and teacher literacy/development
+studies. Preschool, primary school, and junior-high/lower-secondary studies are
+especially preferred, but the topic gate also accepts AI-assisted teaching,
+subject-specific AI integration, teacher digital/AI/intelligent/data literacy,
+AI integration in preservice and in-service teacher education, and teaching or
+teacher-role change under educational digital transformation. The search window
+is three years, with a separate seen-state file and standardized output file
+names.
 """
 
 from __future__ import annotations
@@ -25,12 +27,33 @@ import search as search_module
 from config import ConfigError
 from utils import DailyReport, Paper, write_text_file
 
-AI_TITLE = "学前与基础教育AI专题文献推送"
+AI_TITLE = "教学与教师数字素养AI专题文献推送"
 AI_FILE_SUFFIX = "AI教育专题文献推送"
-AI_SUBJECT = "【学前与基础教育AI专题文献推送】"
+AI_SUBJECT = "【教学与教师数字素养AI专题文献推送】"
 
 AI_PRIORITY_SEARCH_QUERIES: tuple[str, ...] = (
-    # Preschool and basic education + AI teaching application.
+    # Teaching application of AI.
+    "artificial intelligence teaching education",
+    "AI teaching education",
+    "AI assisted teaching",
+    "AI-assisted instruction education",
+    "AI supported classroom teaching",
+    "AI assisted learning education",
+    "AI supported learning education",
+    "generative AI teaching education",
+    "ChatGPT teaching education",
+    "large language models teaching education",
+    "AI lesson planning teacher",
+    "AI teaching design education",
+    "AI curriculum education",
+    "AI classroom assessment teacher",
+    "AI assisted assessment education",
+    "automated feedback education",
+    "intelligent tutoring education",
+    "adaptive learning education",
+    "learning analytics education",
+    "educational data mining",
+    # Preschool, primary and junior-high / lower-secondary contexts.
     "artificial intelligence preschool education teaching",
     "AI early childhood education teaching",
     "generative AI early childhood education",
@@ -48,15 +71,6 @@ AI_PRIORITY_SEARCH_QUERIES: tuple[str, ...] = (
     "AI lower secondary education",
     "school education artificial intelligence teaching",
     "classroom teaching artificial intelligence school",
-    "AI assisted teaching basic education",
-    "AI assisted learning basic education",
-    "AI supported classroom teaching",
-    "AI assisted assessment school education",
-    "automated feedback school education",
-    "intelligent tutoring K-12 education",
-    "adaptive learning primary education",
-    "learning analytics basic education",
-    "educational data mining K-12 education",
     # Subject-specific AI integration.
     "mathematics education artificial intelligence primary school",
     "mathematics teaching artificial intelligence elementary school",
@@ -70,13 +84,23 @@ AI_PRIORITY_SEARCH_QUERIES: tuple[str, ...] = (
     "writing instruction artificial intelligence school",
     "subject teaching artificial intelligence school education",
     "curriculum artificial intelligence basic education",
+    "disciplinary teaching artificial intelligence education",
     # Teacher digital, AI, intelligent and data literacy.
+    "teacher digital literacy education",
+    "teacher digital competence education",
+    "teacher AI literacy education",
+    "teacher artificial intelligence literacy education",
+    "teacher intelligent literacy education",
+    "teacher data literacy education",
+    "teachers digital literacy artificial intelligence",
+    "teachers digital competence artificial intelligence",
+    "teachers data literacy digital education",
     "teacher digital literacy preschool education",
     "teacher digital literacy primary education",
     "teacher digital competence basic education",
     "teacher AI literacy school education",
     "teacher artificial intelligence literacy basic education",
-    "teacher intelligent literacy education",
+    "teacher intelligent literacy school education",
     "teacher data literacy basic education",
     "primary school teacher digital literacy",
     "elementary teacher AI literacy",
@@ -94,6 +118,7 @@ AI_PRIORITY_SEARCH_QUERIES: tuple[str, ...] = (
     "AI lesson planning teacher education",
     "AI classroom assessment teacher training",
     # Educational digital transformation, teaching change and teacher role.
+    "educational digital transformation teaching change",
     "educational digital transformation basic education teacher role",
     "digital transformation school education teacher role",
     "educational digitalization teaching reform school teachers",
@@ -101,6 +126,7 @@ AI_PRIORITY_SEARCH_QUERIES: tuple[str, ...] = (
     "artificial intelligence teacher role school education",
     "digital education teacher role primary school",
     "technology integration teacher role basic education",
+    "technology integration teaching education",
     "teacher agency artificial intelligence school education",
 )
 
@@ -159,7 +185,7 @@ def _has_ai_theme(text: str) -> bool:
     return any(re.search(pattern, text) for pattern in patterns)
 
 
-def _has_preschool_or_basic_stage(text: str) -> bool:
+def _has_preschool_primary_or_junior_stage(text: str) -> bool:
     stage_terms = (
         "preschool",
         "pre-school",
@@ -187,7 +213,7 @@ def _has_preschool_or_basic_stage(text: str) -> bool:
     return _contains_any(text, stage_terms)
 
 
-def _has_ai_teaching_application(text: str) -> bool:
+def _has_teaching_related_theme(text: str) -> bool:
     teaching_terms = (
         "teaching",
         "instruction",
@@ -203,8 +229,14 @@ def _has_ai_teaching_application(text: str) -> bool:
         "adaptive learning",
         "learning analytics",
         "educational data mining",
+        "pedagogy",
+        "pedagogical",
     )
-    return _has_ai_theme(text) and _contains_any(text, teaching_terms)
+    return _contains_any(text, teaching_terms)
+
+
+def _has_ai_teaching_application(text: str) -> bool:
+    return _has_ai_theme(text) and _has_teaching_related_theme(text)
 
 
 def _has_subject_ai_theme(text: str) -> bool:
@@ -233,6 +265,10 @@ def _has_teacher_literacy_theme(text: str) -> bool:
         "teacher artificial intelligence literacy",
         "teacher intelligent literacy",
         "teacher data literacy",
+        "teachers digital literacy",
+        "teachers digital competence",
+        "teachers ai literacy",
+        "teachers data literacy",
         "digital literacy",
         "digital competence",
         "ai literacy",
@@ -304,47 +340,67 @@ def _is_high_school_only(text: str) -> bool:
     return _contains_any(text, high_school_terms) and not _contains_any(text, lower_stage_terms)
 
 
-def _prioritize_defined_scope(paper: Paper, whitelist, mode: str):  # noqa: ANN001
-    ok, score, reasons = _ORIGINAL_SCORE_PAPER(paper, whitelist, mode)
-    if not ok:
-        return ok, score, reasons
+def _can_relax_original_stage_gate(reasons: list[str], text: str) -> bool:
+    """Allow broad teaching or teacher-literacy papers blocked only by a missing stage term."""
 
+    if "no_preschool_or_basic_education_stage" not in reasons:
+        return False
+    if any(reason.startswith("excluded:") or reason == "not_in_ssci_whitelist" for reason in reasons):
+        return False
+    return (
+        _has_ai_teaching_application(text)
+        or _has_subject_ai_theme(text)
+        or _has_teacher_literacy_theme(text)
+        or _has_teacher_education_ai_integration(text)
+        or _has_digital_transformation_teacher_role(text)
+    )
+
+
+def _prioritize_defined_scope(paper: Paper, whitelist, mode: str):  # noqa: ANN001
     text = _paper_text(paper)
-    stage_hit = _has_preschool_or_basic_stage(text)
+    ok, score, reasons = _ORIGINAL_SCORE_PAPER(paper, whitelist, mode)
+    if not ok and not _can_relax_original_stage_gate(reasons, text):
+        return ok, score, reasons
+    if not ok:
+        score = max(score, 0)
+        reasons = [reason for reason in reasons if reason != "no_preschool_or_basic_education_stage"]
+
+    stage_hit = _has_preschool_primary_or_junior_stage(text)
+    teaching_related = _has_teaching_related_theme(text)
     ai_teaching = _has_ai_teaching_application(text)
     subject_ai = _has_subject_ai_theme(text)
     teacher_literacy = _has_teacher_literacy_theme(text)
     teacher_education_ai = _has_teacher_education_ai_integration(text)
     digital_transform = _has_digital_transformation_teacher_role(text)
 
-    if _is_high_school_only(text) and not teacher_education_ai:
+    if _is_high_school_only(text) and not (teacher_education_ai or teacher_literacy or ai_teaching):
         return False, score - 20, reasons + ["scope:high_school_only"]
-
-    if not stage_hit and not teacher_education_ai:
-        return False, score - 20, reasons + ["scope:not_preschool_or_basic_education"]
 
     topic_hits: list[str] = []
     if subject_ai:
         score += 45
         topic_hits.append("subject_ai_integration")
     if ai_teaching:
-        score += 40
+        score += 42
         topic_hits.append("ai_teaching_application")
     if teacher_literacy:
-        score += 36
+        score += 40
         topic_hits.append("teacher_digital_ai_data_literacy")
     if teacher_education_ai:
         score += 38
         topic_hits.append("teacher_education_ai_integration")
     if digital_transform:
-        score += 28
+        score += 30
         topic_hits.append("digital_transformation_teacher_role")
+    if teaching_related:
+        score += 16
+        topic_hits.append("teaching_related")
     if stage_hit:
         score += 20
-        topic_hits.append("preschool_or_basic_education_stage")
+        topic_hits.append("preschool_primary_or_junior_stage")
 
     if not topic_hits:
-        return False, score, reasons + ["scope:no_defined_topic"]
+        return False, score, reasons + ["scope:no_teaching_or_teacher_literacy_topic"]
 
     return True, score, reasons + [f"defined_scope:{hit}" for hit in topic_hits]
 
@@ -370,7 +426,7 @@ def _special_markdown_content(report: DailyReport) -> str:
     if marker in content:
         content = content.replace(
             marker,
-            f"{marker}\n> 专题范围：聚焦学前教育及基础教育阶段，尤其是小学、初中；主题涵盖AI在教学中的应用、学科融合AI、教师数字/智能/数据素养、职前与在职教师培训中的AI整合、教育数字化背景下的教学变革与教师角色；检索窗口：近三年；去重策略：跨次推送不重复推荐。",
+            f"{marker}\n> 专题范围：聚焦教学相关研究，优先推荐学前、小学、初中及K-12场景；主题涵盖AI辅助教学/学习/评价、学科融合AI、教师数字/智能/数据素养、职前与在职教师培训中的AI整合、教育数字化背景下的教学变革与教师角色；检索窗口：近三年；去重策略：跨次推送不重复推荐。",
             1,
         )
     return content
@@ -400,7 +456,7 @@ def generate_ai_education_html(report: DailyReport, config) -> str:  # noqa: ANN
 
 
 def ai_education_subject(report_date) -> str:  # noqa: ANN001
-    return f"{AI_SUBJECT}{report_date.isoformat()} 近三年学前/基础教育AI与教师发展研究"
+    return f"{AI_SUBJECT}{report_date.isoformat()} 近三年教学与教师数字素养研究"
 
 
 def patch_pipeline() -> None:
