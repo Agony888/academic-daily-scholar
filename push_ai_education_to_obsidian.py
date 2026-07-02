@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import os
 import subprocess
-import sys
 from pathlib import Path
 
 OBSIDIAN_VAULT_REPO = "Agony888/obsidian-vault"
 OBSIDIAN_VAULT_DIR = "文献日报"
+REPORT_PATTERN = "*_AI教育专题文献推送.md"
 
 
 def run(command: list[str], *, cwd: Path | None = None) -> None:
@@ -17,14 +17,21 @@ def run(command: list[str], *, cwd: Path | None = None) -> None:
 
 def latest_ai_report() -> Path | None:
     daily = Path("daily")
-    reports = sorted(daily.glob("*_AI教育专题文献推送.md"))
+    reports = sorted(daily.glob(REPORT_PATTERN))
     return reports[-1] if reports else None
 
 
+def read_vault_token() -> str:
+    return (
+        os.getenv("VAULT_SYNC_TOKEN", "").strip()
+        or os.getenv("OBSIDIAN_VAULT_TOKEN", "").strip()
+    )
+
+
 def main() -> int:
-    token = os.getenv("OBSIDIAN_VAULT_TOKEN", "").strip()
+    token = read_vault_token()
     if not token:
-        print("OBSIDIAN_VAULT_TOKEN is not configured. Skipping Obsidian sync.")
+        print("Vault sync token is not configured. Skipping Obsidian sync.")
         return 0
 
     source = latest_ai_report()
