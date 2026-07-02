@@ -84,6 +84,11 @@ jobs:
           SSCI_FILTER_MODE: strict
         run: python ai_education_push.py
 
+      - name: Save AI education report to literature folder
+        env:
+          VAULT_SYNC_TOKEN: ${{ secrets.OBSIDIAN_VAULT_TOKEN }}
+        run: python push_ai_education_to_obsidian.py
+
       - name: Persist AI education seen state
         run: |
           set -euo pipefail
