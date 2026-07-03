@@ -11,7 +11,8 @@ from zoneinfo import ZoneInfo
 import schedule
 
 from config import ConfigError, load_config
-from filter import filter_papers, load_ssci_whitelist, mark_papers_seen
+from daily_selection import configure_daily_search_queries, select_daily_papers as filter_papers
+from filter import load_ssci_whitelist, mark_papers_seen
 from html_generator import generate_html
 from logger import setup_logger
 from mailer import send_daily_email
@@ -27,47 +28,24 @@ def run_daily_job(*, send_email: bool | None = None) -> DailyReport:
     tz = ZoneInfo(config.timezone)
     now = datetime.now(tz)
     window_end = now
-    primary_window_start = now - timedelta(days=config.primary_search_days)
-    fallback_window_start = now - timedelta(days=365 * config.fallback_search_years)
+    report_window_start = now - timedelta(days=365 * config.fallback_search_years)
 
+    configure_daily_search_queries()
     logger.info(
-        "Academic Daily Scholar started primary_window_start=%s fallback_window_start=%s window_end=%s",
-        primary_window_start,
-        fallback_window_start,
+        "Academic Daily Scholar started report_window_start=%s window_end=%s selection_strategy=2_latest_plus_3_ai_teaching_relevance",
+        report_window_start,
         window_end,
     )
     whitelist = load_ssci_whitelist(config.ssci_whitelist_path, logger)
-    primary_papers = search_recent_papers(config, primary_window_start, window_end, logger)
-    selected = filter_papers(primary_papers, config, logger, whitelist)
-    all_papers = list(primary_papers)
-    report_window_start = primary_window_start
-
-    if len(selected) < config.max_papers:
-        logger.info(
-            "近%s天筛选不足 target=%s selected=%s，自动扩大到近%s年",
-            config.primary_search_days,
-            config.max_papers,
-            len(selected),
-            config.fallback_search_years,
-        )
-        fallback_papers = search_recent_papers(config, fallback_window_start, window_end, logger)
-        all_papers.extend(fallback_papers)
-        selected_ids = {paper.identity for paper in selected}
-        supplement = filter_papers(
-            fallback_papers,
-            config,
-            logger,
-            whitelist,
-            exclude_identities=selected_ids,
-        )
-        selected.extend(supplement[: max(0, config.max_papers - len(selected))])
-        report_window_start = fallback_window_start
-        logger.info("扩大检索后 selected=%s", len(selected))
+    all_papers = search_recent_papers(config, report_window_start, window_end, logger)
+    selected = filter_papers(all_papers, config, logger, whitelist)
 
     notice = ""
     if len(selected) < config.max_papers:
         notice = f"今日不足{config.max_papers}篇，未重复推荐；实际筛选{len(selected)}篇。"
         logger.warning("%s 可用候选不足，请检查SSCI白名单、主题规则或检索源状态。", notice)
+    elif config.max_papers >= 5:
+        notice = "本期采用混合推荐策略：2篇近三年内最新候选文献 + 3篇近三年内AI教学相关度最高文献；已排除历史重复推荐。"
 
     items, hotspot, api_elapsed, failures = summarize_papers(selected, config, logger)
 
